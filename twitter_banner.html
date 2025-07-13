@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter Banner - Building Peak AI Agents</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .banner {
+            width: 1500px;
+            height: 500px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 60px 80px;
+        }
+        
+        .left-section {
+            flex: 1;
+            max-width: 600px;
+        }
+        
+        .main-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: white;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 24px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+        
+        .tagline {
+            font-size: 18px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 400;
+            font-style: italic;
+        }
+        
+        .right-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            opacity: 0.9;
+        }
+        
+        .agent-node {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .agent-node::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 14px;
+            background: linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+            z-index: -1;
+        }
+        
+        .agent-node.primary {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.5);
+            transform: scale(1.1);
+        }
+        
+        .agent-icon {
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .connection-line {
+            position: absolute;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+        }
+        
+        .line-1 {
+            width: 60px;
+            height: 2px;
+            top: 39px;
+            left: 100px;
+        }
+        
+        .line-2 {
+            width: 60px;
+            height: 2px;
+            top: 39px;
+            left: 180px;
+        }
+        
+        .line-3 {
+            width: 2px;
+            height: 60px;
+            top: 100px;
+            left: 119px;
+        }
+        
+        .line-4 {
+            width: 2px;
+            height: 60px;
+            top: 100px;
+            left: 199px;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .floating-dot {
+            position: absolute;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .dot-1 {
+            width: 8px;
+            height: 8px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .dot-2 {
+            width: 6px;
+            height: 6px;
+            top: 60%;
+            left: 5%;
+            animation-delay: 2s;
+        }
+        
+        .dot-3 {
+            width: 10px;
+            height: 10px;
+            top: 80%;
+            right: 10%;
+            animation-delay: 4s;
+        }
+        
+        .dot-4 {
+            width: 4px;
+            height: 4px;
+            top: 30%;
+            right: 20%;
+            animation-delay: 1s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+                opacity: 0.2;
+            }
+            50% {
+                transform: translateY(-20px);
+                opacity: 0.6;
+            }
+        }
+        
+        .highlight {
+            background: linear-gradient(90deg, rgba(255,255,255,0.3), transparent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <div class="floating-elements">
+            <div class="floating-dot dot-1"></div>
+            <div class="floating-dot dot-2"></div>
+            <div class="floating-dot dot-3"></div>
+            <div class="floating-dot dot-4"></div>
+        </div>
+        
+        <div class="content">
+            <div class="left-section">
+                <div class="main-title">
+                    Building Peak<br>
+                    <span class="highlight">AI Agents</span>
+                </div>
+                <div class="subtitle">
+                    Orchestrating the future of AI workflows
+                </div>
+                <div class="tagline">
+                    Claude Code + O3 + Custom Agents = 10x Output
+                </div>
+            </div>
+            
+            <div class="right-section">
+                <div class="agent-grid">
+                    <div class="agent-node">
+                        <div class="agent-icon">🧠</div>
+                    </div>
+                    <div class="agent-node primary">
+                        <div class="agent-icon">🤖</div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon">⚡</div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon">🔍</div>
+                    </div>
+                    <div class="agent-node primary">
+                        <div class="agent-icon">🚀</div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon">💎</div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon">🔧</div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon">🎯</div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon">✨</div>
+                    </div>
+                </div>
+                
+                <div class="connection-line line-1"></div>
+                <div class="connection-line line-2"></div>
+                <div class="connection-line line-3"></div>
+                <div class="connection-line line-4"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

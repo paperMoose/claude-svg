@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Banner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .banner {
+            width: 1584px;
+            height: 396px;
+            background: linear-gradient(135deg, #134e4a 0%, #065f46 50%, #047857 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Content positioned on the right side */
+        .content {
+            position: absolute;
+            top: 40px;
+            right: 60px;
+            width: 900px;
+            height: 316px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .text-section {
+            text-align: right;
+            z-index: 10;
+            max-width: 700px;
+        }
+        
+        .main-title {
+            font-size: 48px;
+            font-weight: 500;
+            color: white;
+            line-height: 1.2;
+            margin-bottom: 18px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        .connect-emphasis {
+            font-weight: 700;
+            background: linear-gradient(45deg, #10b981, #06d6a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+        }
+        
+        .subtitle {
+            font-size: 24px;
+            color: rgba(255,255,255,0.9);
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        
+        .graphic-section {
+            position: absolute;
+            left: 120px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 280px;
+            height: 280px;
+            opacity: 0.12;
+        }
+        
+        /* Subtle neural network background pattern */
+        .network-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.06;
+            z-index: 1;
+        }
+        
+        .network-node {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .network-line {
+            position: absolute;
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+            transform-origin: left center;
+        }
+        
+        /* Positioning for network elements */
+        .node-1 { top: 15%; left: 10%; }
+        .node-2 { top: 30%; left: 20%; }
+        .node-3 { top: 55%; left: 15%; }
+        .node-4 { top: 75%; left: 25%; }
+        .node-5 { top: 20%; right: 25%; }
+        .node-6 { top: 40%; right: 15%; }
+        .node-7 { top: 65%; right: 20%; }
+        .node-8 { top: 35%; left: 45%; }
+        .node-9 { top: 60%; left: 50%; }
+        .node-10 { top: 80%; left: 60%; }
+        
+        .line-1 { top: 15%; left: 10%; width: 100px; transform: rotate(20deg); }
+        .line-2 { top: 30%; left: 20%; width: 80px; transform: rotate(-10deg); }
+        .line-3 { top: 55%; left: 15%; width: 90px; transform: rotate(30deg); }
+        .line-4 { top: 20%; right: 25%; width: 70px; transform: rotate(-40deg); }
+        .line-5 { top: 40%; right: 15%; width: 60px; transform: rotate(15deg); }
+        .line-6 { top: 35%; left: 45%; width: 85px; transform: rotate(-25deg); }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <!-- Subtle network background -->
+        <div class="network-bg">
+            <div class="network-node node-1"></div>
+            <div class="network-node node-2"></div>
+            <div class="network-node node-3"></div>
+            <div class="network-node node-4"></div>
+            <div class="network-node node-5"></div>
+            <div class="network-node node-6"></div>
+            <div class="network-node node-7"></div>
+            <div class="network-node node-8"></div>
+            <div class="network-node node-9"></div>
+            <div class="network-node node-10"></div>
+            
+            <div class="network-line line-1"></div>
+            <div class="network-line line-2"></div>
+            <div class="network-line line-3"></div>
+            <div class="network-line line-4"></div>
+            <div class="network-line line-5"></div>
+            <div class="network-line line-6"></div>
+        </div>
+        
+        <div class="content">
+            <div class="text-section">
+                <div class="main-title">
+                    <span class="connect-emphasis">Follow</span> for tips on
+                </div>
+                <div class="subtitle">
+                    🤖 Building agents<br>
+                    🚀 Latest AI models<br>
+                    💼 Building AI native businesses
+                </div>
+            </div>
+        </div>
+        
+        <!-- Creative geometric pattern -->
+        <div class="graphic-section">
+            <svg width="280" height="280" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+                <!-- Hexagonal grid pattern -->
+                <defs>
+                    <pattern id="hexPattern" x="0" y="0" width="40" height="35" patternUnits="userSpaceOnUse">
+                        <polygon points="20,5 35,15 35,25 20,35 5,25 5,15" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                    </pattern>
+                </defs>
+                
+                <!-- Background hexagon pattern -->
+                <rect width="280" height="280" fill="url(#hexPattern)"/>
+                
+                <!-- Main geometric shapes -->
+                <polygon points="70,70 140,50 210,70 190,140 120,160 50,140" fill="rgba(16,185,129,0.15)" stroke="rgba(16,185,129,0.4)" stroke-width="2"/>
+                <polygon points="90,90 140,80 190,90 180,140 130,150 80,140" fill="rgba(6,214,160,0.2)" stroke="rgba(6,214,160,0.6)" stroke-width="2"/>
+                
+                <!-- Central diamond -->
+                <polygon points="140,100 160,140 140,180 120,140" fill="rgba(255,255,255,0.3)" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+                
+                <!-- Floating geometric elements -->
+                <circle cx="200" cy="100" r="8" fill="rgba(16,185,129,0.6)" stroke="rgba(16,185,129,0.8)" stroke-width="1"/>
+                <circle cx="80" cy="180" r="6" fill="rgba(6,214,160,0.6)" stroke="rgba(6,214,160,0.8)" stroke-width="1"/>
+                <circle cx="220" cy="200" r="5" fill="rgba(52,211,153,0.6)" stroke="rgba(52,211,153,0.8)" stroke-width="1"/>
+                
+                <!-- Triangle accents -->
+                <polygon points="60,60 80,60 70,80" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                <polygon points="200,220 220,220 210,200" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                
+                <!-- Connecting lines with organic curves -->
+                <path d="M 70 140 Q 140 120 210 140" stroke="rgba(16,185,129,0.3)" stroke-width="2" fill="none"/>
+                <path d="M 120 80 Q 140 140 160 200" stroke="rgba(6,214,160,0.3)" stroke-width="2" fill="none"/>
+                
+                <!-- Small accent dots -->
+                <circle cx="110" cy="120" r="3" fill="rgba(255,255,255,0.4)"/>
+                <circle cx="170" cy="160" r="3" fill="rgba(255,255,255,0.4)"/>
+                <circle cx="150" cy="110" r="2" fill="rgba(16,185,129,0.6)"/>
+                <circle cx="130" cy="170" r="2" fill="rgba(6,214,160,0.6)"/>
+            </svg>
+        </div>
+        
+    </div>
+</body>
+</html>

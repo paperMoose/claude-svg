@@ -1,0 +1,109 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.95" />
+      <stop offset="100%" style="stop-color:#f8fafc;stop-opacity:0.95" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- Main Content Card -->
+  <rect x="60" y="60" width="1080" height="510" rx="20" fill="url(#cardGradient)" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- Header -->
+  <text x="600" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#1e293b">
+    How I'm getting 10x output
+  </text>
+  <text x="600" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#1e293b">
+    from Claude Code
+  </text>
+  
+  <!-- Workflow Icons and Flow -->
+  <g transform="translate(150, 180)">
+    <!-- Claude Code Box -->
+    <rect x="0" y="0" width="180" height="70" rx="10" fill="#3b82f6" stroke="#2563eb" stroke-width="2"/>
+    <text x="90" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">
+      Claude Code
+    </text>
+    <text x="90" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#dbeafe">
+      Build • Refactor • Test
+    </text>
+    <text x="90" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#dbeafe">
+      Iterate at speed
+    </text>
+  </g>
+  
+  <!-- Arrow 1 -->
+  <g transform="translate(350, 215)">
+    <path d="M 0 0 L 60 0 L 55 -5 M 60 0 L 55 5" stroke="#64748b" stroke-width="3" fill="none"/>
+    <text x="30" y="-10" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#64748b">
+      when stuck
+    </text>
+  </g>
+  
+  <g transform="translate(430, 180)">
+    <!-- ChatGPT O3 Box -->
+    <rect x="0" y="0" width="180" height="70" rx="10" fill="#10b981" stroke="#059669" stroke-width="2"/>
+    <text x="90" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">
+      ChatGPT O3
+    </text>
+    <text x="90" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#dcfce7">
+      Deep Research
+    </text>
+    <text x="90" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#dcfce7">
+      Context Discovery
+    </text>
+  </g>
+  
+  <!-- Arrow 2 -->
+  <g transform="translate(630, 215)">
+    <path d="M 0 0 L 60 0 L 55 -5 M 60 0 L 55 5" stroke="#64748b" stroke-width="3" fill="none"/>
+    <text x="30" y="-10" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#64748b">
+      back to
+    </text>
+  </g>
+  
+  <g transform="translate(710, 180)">
+    <!-- Output Box -->
+    <rect x="0" y="0" width="140" height="70" rx="10" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+    <text x="70" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white">
+      10x
+    </text>
+    <text x="70" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">
+      Output
+    </text>
+  </g>
+  
+  <!-- Key Points -->
+  <g transform="translate(120, 300)">
+    <circle cx="10" cy="10" r="4" fill="#3b82f6"/>
+    <text x="25" y="15" font-family="Arial, sans-serif" font-size="16" fill="#334155">
+      Claude Code excels with the right context
+    </text>
+  </g>
+  
+  <g transform="translate(120, 330)">
+    <circle cx="10" cy="10" r="4" fill="#10b981"/>
+    <text x="25" y="15" font-family="Arial, sans-serif" font-size="16" fill="#334155">
+      O3's research fills the gaps when Claude gets stuck
+    </text>
+  </g>
+  
+  <g transform="translate(120, 360)">
+    <circle cx="10" cy="10" r="4" fill="#f59e0b"/>
+    <text x="25" y="15" font-family="Arial, sans-serif" font-size="16" fill="#334155">
+      The combination is already compounding output
+    </text>
+  </g>
+  
+  <!-- Bottom text -->
+  <text x="600" y="460" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-style="italic" fill="#64748b">
+    What's your AI workflow been like lately?
+  </text>
+</svg>
