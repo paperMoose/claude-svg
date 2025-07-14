@@ -87,7 +87,23 @@ Example SVG structure to insert:
 </svg>
 ```
 
-Then provide: `/full/absolute/path/to/your-visualization.html`
+**CRITICAL FILE PATH REQUIREMENTS:**
+When providing the HTML file path to users, you MUST:
+- Use the complete absolute file path with NO line breaks, spaces, or formatting
+- Ensure the path is clean and copyable in a single line
+- Never include markdown formatting, line numbers, or any other characters
+- Format: `/Users/username/.claude-squad/worktrees/project/filename.html`
+- BAD: `/Users/username/.claude-squad/worktrees/project/\nfilename.html` (line break)
+- BAD: ` /Users/username/...` (leading space)
+- BAD: `/Users/username/... ` (trailing space)
+- GOOD: `/Users/ryanbrandt/.claude-squad/worktrees/vunda_1851fd245cfa9a78/architecture-diagram.html`
+
+The visualization template now includes:
+- **Cropping**: Enable crop mode to select specific areas of the image
+- **Rotation**: Rotate the image from 0-360 degrees  
+- **Scaling**: Scale the image from 25% to 200%
+- **Interactive crop handles**: Drag to move crop area, resize using corner handles
+- **Real-time preview**: All transformations visible before download
 
 ## Twitter Banner Creation
 

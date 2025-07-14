@@ -22,8 +22,33 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
-            min-width: 200px;
+            min-width: 250px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
+        
+        #crop-overlay {
+            position: absolute;
+            border: 2px dashed #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+            cursor: move;
+            display: none;
+            z-index: 100;
+        }
+        
+        .crop-handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #3b82f6;
+            border: 2px solid white;
+            cursor: nw-resize;
+        }
+        
+        .crop-handle.nw { top: -6px; left: -6px; cursor: nw-resize; }
+        .crop-handle.ne { top: -6px; right: -6px; cursor: ne-resize; }
+        .crop-handle.sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+        .crop-handle.se { bottom: -6px; right: -6px; cursor: se-resize; }
         
         #controls h3 {
             margin: 0 0 15px 0;
@@ -77,6 +102,9 @@
             border-radius: 8px;
             box-shadow: 0 0 40px rgba(59, 130, 246, 0.2);
             display: inline-block;
+            position: relative;
+            transform-origin: center;
+            transition: transform 0.2s ease;
         }
         
         /* Theme variations */
@@ -144,6 +172,23 @@
         </div>
         
         <div class="control-group">
+            <label for="rotation">Rotation (degrees)</label>
+            <input type="range" id="rotation" min="0" max="360" step="1" value="0" oninput="updateRotation()">
+            <small style="color: #64748b; font-size: 11px;">0°</small>
+        </div>
+        
+        <div class="control-group">
+            <label for="scale-transform">Scale (%)</label>
+            <input type="range" id="scale-transform" min="25" max="200" step="5" value="100" oninput="updateScale()">
+            <small style="color: #64748b; font-size: 11px;">100%</small>
+        </div>
+        
+        <div class="control-group">
+            <button onclick="toggleCrop()" id="crop-btn" style="width: 100%; padding: 8px; background: #059669; color: white; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 10px;">Enable Crop</button>
+            <button onclick="resetCrop()" style="width: 100%; padding: 8px; background: #dc2626; color: white; border: none; border-radius: 4px; cursor: pointer;">Reset Crop</button>
+        </div>
+        
+        <div class="control-group">
             <label for="theme">Preview Theme</label>
             <select id="theme" onchange="changeTheme()">
                 <option value="dark">Dark</option>
@@ -155,6 +200,12 @@
     </div>
     
     <div id="visualization-container">
+        <div id="crop-overlay">
+            <div class="crop-handle nw"></div>
+            <div class="crop-handle ne"></div>
+            <div class="crop-handle sw"></div>
+            <div class="crop-handle se"></div>
+        </div>
         <!-- CLAUDE WILL REPLACE THIS COMMENT WITH SVG -->
         <svg id="visualization" width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
             <!-- Placeholder - Replace with actual SVG content -->
@@ -174,11 +225,46 @@
             defaultQuality: 0.9
         };
         
+        // Crop state
+        let cropState = {
+            enabled: false,
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0,
+            isDragging: false,
+            isResizing: false,
+            dragHandle: null
+        };
+        
         // Update quality label
         document.getElementById('quality').addEventListener('input', function(e) {
             const label = e.target.nextElementSibling;
             label.textContent = Math.round(e.target.value * 100) + '%';
         });
+        
+        // Update rotation
+        function updateRotation() {
+            const rotation = document.getElementById('rotation').value;
+            document.getElementById('rotation').nextElementSibling.textContent = rotation + '°';
+            const container = document.getElementById('visualization-container');
+            updateTransform();
+        }
+        
+        // Update scale
+        function updateScale() {
+            const scale = document.getElementById('scale-transform').value;
+            document.getElementById('scale-transform').nextElementSibling.textContent = scale + '%';
+            updateTransform();
+        }
+        
+        // Update transform
+        function updateTransform() {
+            const rotation = document.getElementById('rotation').value;
+            const scale = document.getElementById('scale-transform').value / 100;
+            const container = document.getElementById('visualization-container');
+            container.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+        }
         
         // Theme switcher
         function changeTheme() {
@@ -186,9 +272,129 @@
             document.body.className = theme;
         }
         
+        // Crop functionality
+        function toggleCrop() {
+            const overlay = document.getElementById('crop-overlay');
+            const btn = document.getElementById('crop-btn');
+            
+            if (!cropState.enabled) {
+                cropState.enabled = true;
+                overlay.style.display = 'block';
+                btn.textContent = 'Disable Crop';
+                btn.style.background = '#dc2626';
+                initializeCrop();
+            } else {
+                cropState.enabled = false;
+                overlay.style.display = 'none';
+                btn.textContent = 'Enable Crop';
+                btn.style.background = '#059669';
+            }
+        }
+        
+        function initializeCrop() {
+            const container = document.getElementById('visualization-container');
+            const overlay = document.getElementById('crop-overlay');
+            const rect = container.getBoundingClientRect();
+            
+            // Set initial crop to center 50% of the image
+            const width = rect.width * 0.5;
+            const height = rect.height * 0.5;
+            const x = (rect.width - width) / 2;
+            const y = (rect.height - height) / 2;
+            
+            cropState.x = x;
+            cropState.y = y;
+            cropState.width = width;
+            cropState.height = height;
+            
+            updateCropOverlay();
+        }
+        
+        function updateCropOverlay() {
+            const overlay = document.getElementById('crop-overlay');
+            overlay.style.left = cropState.x + 'px';
+            overlay.style.top = cropState.y + 'px';
+            overlay.style.width = cropState.width + 'px';
+            overlay.style.height = cropState.height + 'px';
+        }
+        
+        function resetCrop() {
+            if (cropState.enabled) {
+                initializeCrop();
+            }
+        }
+        
+        // Mouse events for crop
+        document.getElementById('crop-overlay').addEventListener('mousedown', function(e) {
+            if (e.target.classList.contains('crop-handle')) {
+                cropState.isResizing = true;
+                cropState.dragHandle = e.target.classList[1]; // nw, ne, sw, se
+            } else {
+                cropState.isDragging = true;
+            }
+            cropState.startX = e.clientX;
+            cropState.startY = e.clientY;
+            cropState.startCropX = cropState.x;
+            cropState.startCropY = cropState.y;
+            cropState.startCropWidth = cropState.width;
+            cropState.startCropHeight = cropState.height;
+            e.preventDefault();
+        });
+        
+        document.addEventListener('mousemove', function(e) {
+            if (!cropState.enabled) return;
+            
+            const deltaX = e.clientX - cropState.startX;
+            const deltaY = e.clientY - cropState.startY;
+            const container = document.getElementById('visualization-container');
+            const containerRect = container.getBoundingClientRect();
+            
+            if (cropState.isDragging) {
+                cropState.x = Math.max(0, Math.min(containerRect.width - cropState.width, cropState.startCropX + deltaX));
+                cropState.y = Math.max(0, Math.min(containerRect.height - cropState.height, cropState.startCropY + deltaY));
+                updateCropOverlay();
+            } else if (cropState.isResizing) {
+                const handle = cropState.dragHandle;
+                let newX = cropState.startCropX;
+                let newY = cropState.startCropY;
+                let newWidth = cropState.startCropWidth;
+                let newHeight = cropState.startCropHeight;
+                
+                if (handle.includes('w')) { // west
+                    newX = Math.max(0, cropState.startCropX + deltaX);
+                    newWidth = cropState.startCropWidth - (newX - cropState.startCropX);
+                }
+                if (handle.includes('e')) { // east
+                    newWidth = Math.min(containerRect.width - cropState.startCropX, cropState.startCropWidth + deltaX);
+                }
+                if (handle.includes('n')) { // north
+                    newY = Math.max(0, cropState.startCropY + deltaY);
+                    newHeight = cropState.startCropHeight - (newY - cropState.startCropY);
+                }
+                if (handle.includes('s')) { // south
+                    newHeight = Math.min(containerRect.height - cropState.startCropY, cropState.startCropHeight + deltaY);
+                }
+                
+                if (newWidth > 20 && newHeight > 20) {
+                    cropState.x = newX;
+                    cropState.y = newY;
+                    cropState.width = newWidth;
+                    cropState.height = newHeight;
+                    updateCropOverlay();
+                }
+            }
+        });
+        
+        document.addEventListener('mouseup', function(e) {
+            cropState.isDragging = false;
+            cropState.isResizing = false;
+            cropState.dragHandle = null;
+        });
+        
         // Main download function
         function downloadVisualization() {
             const svg = document.getElementById('visualization');
+            const container = document.getElementById('visualization-container');
             const svgData = new XMLSerializer().serializeToString(svg);
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -199,15 +405,42 @@
             const format = document.getElementById('format').value;
             const scaleFactor = parseInt(document.getElementById('scale').value);
             const quality = parseFloat(document.getElementById('quality').value);
+            const rotation = parseFloat(document.getElementById('rotation').value);
+            const scaleTransform = parseFloat(document.getElementById('scale-transform').value) / 100;
+            
+            // Calculate final dimensions
+            let finalWidth = svg.width.baseVal.value;
+            let finalHeight = svg.height.baseVal.value;
+            
+            if (cropState.enabled) {
+                // Calculate crop ratios
+                const containerRect = container.getBoundingClientRect();
+                const cropRatioX = cropState.x / containerRect.width;
+                const cropRatioY = cropState.y / containerRect.height;
+                const cropRatioWidth = cropState.width / containerRect.width;
+                const cropRatioHeight = cropState.height / containerRect.height;
+                
+                finalWidth = svg.width.baseVal.value * cropRatioWidth;
+                finalHeight = svg.height.baseVal.value * cropRatioHeight;
+            }
+            
+            // Apply transforms to canvas size
+            finalWidth *= scaleTransform;
+            finalHeight *= scaleTransform;
+            
+            // Handle rotation - swap dimensions if needed
+            if (rotation === 90 || rotation === 270) {
+                [finalWidth, finalHeight] = [finalHeight, finalWidth];
+            }
             
             // Set canvas dimensions
-            canvas.width = svg.width.baseVal.value * scaleFactor;
-            canvas.height = svg.height.baseVal.value * scaleFactor;
-            
-            // Scale the context
-            ctx.scale(scaleFactor, scaleFactor);
+            canvas.width = finalWidth * scaleFactor;
+            canvas.height = finalHeight * scaleFactor;
             
             img.onload = function() {
+                // Clear and prepare canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
                 // Set background for JPEG (doesn't support transparency)
                 if (format === 'jpeg') {
                     ctx.fillStyle = '#ffffff';
@@ -218,8 +451,33 @@
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
                 
-                // Draw the image
-                ctx.drawImage(img, 0, 0);
+                // Apply transformations
+                ctx.save();
+                ctx.scale(scaleFactor, scaleFactor);
+                
+                // Move to center for rotation
+                ctx.translate(finalWidth / 2, finalHeight / 2);
+                ctx.rotate((rotation * Math.PI) / 180);
+                ctx.scale(scaleTransform, scaleTransform);
+                
+                // Calculate source and destination for cropping
+                let sourceX = 0, sourceY = 0, sourceWidth = svg.width.baseVal.value, sourceHeight = svg.height.baseVal.value;
+                let destWidth = sourceWidth, destHeight = sourceHeight;
+                
+                if (cropState.enabled) {
+                    const containerRect = container.getBoundingClientRect();
+                    sourceX = (cropState.x / containerRect.width) * svg.width.baseVal.value;
+                    sourceY = (cropState.y / containerRect.height) * svg.height.baseVal.value;
+                    sourceWidth = (cropState.width / containerRect.width) * svg.width.baseVal.value;
+                    sourceHeight = (cropState.height / containerRect.height) * svg.height.baseVal.value;
+                    destWidth = sourceWidth;
+                    destHeight = sourceHeight;
+                }
+                
+                // Draw the image (centered due to translate)
+                ctx.drawImage(img, sourceX, sourceY, sourceWidth, sourceHeight, -destWidth/2, -destHeight/2, destWidth, destHeight);
+                
+                ctx.restore();
                 
                 // Convert to blob and download
                 const mimeType = format === 'png' ? 'image/png' : 
