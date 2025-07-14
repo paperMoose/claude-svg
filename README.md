@@ -9,9 +9,6 @@ Create stunning diagrams, architecture visualizations, and professional graphics
 ### AWS Architecture Diagram
 ![AWS Architecture Diagram](./examples/aws-architecture.svg)
 
-### Viral Meme Recreation - Chill Guy (2024)
-[View Interactive Chill Guy](./examples/chill-guy-canvas.html)
-
 ### LinkedIn Banner
 ![LinkedIn Banner Example](./examples/example-linkedin-banner.svg)
 
@@ -50,10 +47,33 @@ Claude will generate a high-quality diagram and save it with a descriptive name.
 3. **Ask Claude** to create any diagram you need
 4. **Find your diagram** in the project directory
 
+## What This Is Actually Great For
+
+✅ **Technical Architecture Diagrams** - AWS, network topology, microservices  
+✅ **Professional Flowcharts** - Clean, presentation-ready process flows  
+✅ **Data Visualizations** - Interactive charts, dashboards, metrics  
+✅ **Business Diagrams** - Org charts, system integrations, timelines  
+✅ **Clean Logos & Icons** - Geometric, scalable, professional designs  
+✅ **Modern Infographics** - Minimalist, data-driven visualizations  
+
+## What It's NOT Great For
+
+❌ **Complex Character Art** - Tried to recreate viral memes... it went badly  
+❌ **Detailed Illustrations** - Organic shapes and realistic art  
+❌ **Photo Recreation** - Stick to geometric and technical designs  
+
+### The Meme Experiment (WARNING: Nightmare Fuel)
+
+We tried recreating the viral "Chill Guy" meme. Here's what happened:
+
+![The Horror](./examples/horror.png)
+
+**Lesson learned:** Use the right tool for the job. SVG/Canvas excel at technical diagrams, not character recreation.
+
 ## What Makes This Special
 
-- **Professional Quality** - Not just basic SVGs, but presentation-ready diagrams
-- **Smart Layouts** - Claude automatically arranges elements for clarity
+- **Professional Quality** - Presentation-ready technical diagrams
+- **Smart Layouts** - Claude automatically arranges elements for clarity  
 - **Beautiful Styling** - Gradients, shadows, animations, and modern design
 - **Export Ready** - Use the HTML template to export as PNG, JPEG, or WebP
 - **Customizable** - Request specific colors, styles, or branding
