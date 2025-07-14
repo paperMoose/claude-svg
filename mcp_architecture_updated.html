@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 20px; 
+            background: #0a0e27; 
+            font-family: Arial, sans-serif; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #download-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        #download-btn:hover { 
+            background: #2563eb; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        #visualization {
+            background: #0a0e27;
+            border-radius: 8px;
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <button id="download-btn" onclick="downloadSVGAsPNG()">Download as PNG</button>
+    
+    <svg id="visualization" width="1400" height="900" viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background -->
+        <rect width="1400" height="900" fill="#0a0e27"/>
+        
+        <!-- Grid pattern -->
+        <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a1f3a" stroke-width="0.5"/>
+            </pattern>
+            
+            <!-- Gradient for boxes -->
+            <linearGradient id="boxGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#2d3561;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#1a1f3a;stop-opacity:1" />
+            </linearGradient>
+            
+            <!-- Glow effect -->
+            <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+            
+            <!-- Arrow marker -->
+            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#00bcd4"/>
+            </marker>
+        </defs>
+        
+        <rect width="1400" height="900" fill="url(#grid)"/>
+        
+        <!-- Title -->
+        <text x="700" y="40" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#ffffff">
+            MCP Validation Service Architecture
+        </text>
+        
+        <!-- POC Status -->
+        <rect x="550" y="60" width="300" height="30" rx="15" fill="#f59e0b" opacity="0.2"/>
+        <text x="700" y="80" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#f59e0b">
+            POC READY - LINTING VALIDATION ONLY
+        </text>
+        
+        <!-- User Request -->
+        <rect x="50" y="130" width="200" height="70" rx="8" fill="#4a5568" stroke="#00bcd4" stroke-width="2"/>
+        <text x="150" y="160" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#ffffff">
+            USER REQUEST
+        </text>
+        <text x="150" y="185" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#00bcd4">🌐</text>
+        
+        <!-- Bedrock AI Agent -->
+        <rect x="50" y="250" width="240" height="120" rx="8" fill="url(#boxGradient)" stroke="#9333ea" stroke-width="2"/>
+        <text x="170" y="280" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">
+            BEDROCK AI AGENT
+        </text>
+        <text x="170" y="305" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#a78bfa">
+            (TKI7Q5AWL1)
+        </text>
+        <text x="170" y="330" font-family="Arial, sans-serif" font-size="28" text-anchor="middle" fill="#9333ea">🤖</text>
+        <text x="170" y="355" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#00d26a">✅ ACTIVE</text>
+        
+        <!-- Lambda MCP Proxy with explanation -->
+        <rect x="360" y="250" width="240" height="120" rx="8" fill="url(#boxGradient)" stroke="#f97316" stroke-width="2"/>
+        <text x="480" y="280" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">
+            LAMBDA MCP PROXY
+        </text>
+        <text x="480" y="305" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#fb923c">
+            (Protocol Bridge)
+        </text>
+        <text x="480" y="330" font-family="Arial, sans-serif" font-size="28" text-anchor="middle" fill="#f97316">⚡</text>
+        <text x="480" y="355" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#00d26a">✅ RESPONDING</text>
+        
+        <!-- Lambda explanation box -->
+        <rect x="360" y="390" width="240" height="80" rx="8" fill="#1e293b" stroke="#f97316" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="480" y="415" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#fb923c">
+            WHY LAMBDA?
+        </text>
+        <text x="480" y="435" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#94a3b8">
+            Bedrock lacks native MCP
+        </text>
+        <text x="480" y="450" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#94a3b8">
+            support - Lambda bridges gap
+        </text>
+        
+        <!-- ECS Fargate with Docker -->
+        <rect x="670" y="250" width="240" height="120" rx="8" fill="url(#boxGradient)" stroke="#3b82f6" stroke-width="2"/>
+        <text x="790" y="280" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">
+            ECS FARGATE
+        </text>
+        <text x="790" y="305" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#60a5fa">
+            DOCKER CONTAINER
+        </text>
+        <text x="790" y="330" font-family="Arial, sans-serif" font-size="28" text-anchor="middle" fill="#3b82f6">🐳</text>
+        <text x="790" y="355" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#00d26a">✅ HEALTHY</text>
+        
+        <!-- Docker explanation box -->
+        <rect x="670" y="390" width="240" height="80" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="790" y="415" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#60a5fa">
+            MCP SERVER IN DOCKER
+        </text>
+        <text x="790" y="435" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#94a3b8">
+            Long-running process with
+        </text>
+        <text x="790" y="450" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#94a3b8">
+            filesystem access for tools
+        </text>
+        
+        <!-- NAT Gateway -->
+        <rect x="980" y="250" width="240" height="120" rx="8" fill="url(#boxGradient)" stroke="#10b981" stroke-width="2"/>
+        <text x="1100" y="280" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">
+            NAT GATEWAY
+        </text>
+        <text x="1100" y="305" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#34d399">
+            35.165.66.53
+        </text>
+        <text x="1100" y="330" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#10b981">
+            (WHITELISTED IP)
+        </text>
+        <text x="1100" y="355" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#00d26a">✅ ROUTING</text>
+        
+        <!-- Private Subnet -->
+        <rect x="360" y="500" width="550" height="100" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" stroke-dasharray="5,5"/>
+        <text x="635" y="530" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#94a3b8">
+            🔒 PRIVATE SUBNET 10.0.2.0/24
+        </text>
+        <text x="635" y="555" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748b">
+            Lambda and ECS share same subnet
+        </text>
+        <text x="635" y="580" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#475569">
+            No public IPs - Maximum security
+        </text>
+        
+        <!-- External Validation API -->
+        <rect x="980" y="650" width="240" height="120" rx="8" fill="url(#boxGradient)" stroke="#ef4444" stroke-width="2"/>
+        <text x="1100" y="680" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">
+            EXTERNAL
+        </text>
+        <text x="1100" y="705" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">
+            VALIDATION API
+        </text>
+        <text x="1100" y="730" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#f87171">
+            50.58.203.231
+        </text>
+        <text x="1100" y="755" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#4ade80">✅ VERIFIED - LINTING ONLY</text>
+        
+        <!-- Connection lines -->
+        <path d="M 150 200 L 150 250" stroke="#00bcd4" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+        <path d="M 290 310 L 360 310" stroke="#00bcd4" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+        <path d="M 600 310 L 670 310" stroke="#00bcd4" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+        <path d="M 910 310 L 980 310" stroke="#00bcd4" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+        <path d="M 1100 370 L 1100 650" stroke="#00bcd4" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+        
+        <!-- Subnet connection lines -->
+        <path d="M 480 470 L 480 500" stroke="#64748b" stroke-width="1" fill="none"/>
+        <path d="M 790 470 L 790 500" stroke="#64748b" stroke-width="1" fill="none"/>
+        
+        <!-- Available Tools -->
+        <rect x="50" y="650" width="850" height="180" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <text x="475" y="680" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">
+            🛠️ AVAILABLE VALIDATION TOOLS
+        </text>
+        
+        <!-- Tool cards -->
+        <rect x="70" y="710" width="190" height="90" rx="4" fill="#2d3561" stroke="#9333ea" stroke-width="1"/>
+        <text x="165" y="735" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#9333ea">validate_script_pylint</text>
+        <text x="165" y="755" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#94a3b8">Python linting</text>
+        <text x="165" y="775" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#94a3b8">Style checks</text>
+        
+        <rect x="280" y="710" width="190" height="90" rx="4" fill="#2d3561" stroke="#f97316" stroke-width="1"/>
+        <text x="375" y="735" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#f97316">validate_script_mypy</text>
+        <text x="375" y="755" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#94a3b8">Type checking</text>
+        <text x="375" y="775" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#94a3b8">Static analysis</text>
+        
+        <rect x="490" y="710" width="190" height="90" rx="4" fill="#2d3561" stroke="#3b82f6" stroke-width="1"/>
+        <text x="585" y="735" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#3b82f6">validate_script_combined</text>
+        <text x="585" y="755" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#94a3b8">Both validators</text>
+        <text x="585" y="775" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#94a3b8">Single call</text>
+        
+        <rect x="700" y="710" width="190" height="90" rx="4" fill="#2d3561" stroke="#10b981" stroke-width="1"/>
+        <text x="795" y="735" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#10b981">validate_script_all</text>
+        <text x="795" y="755" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#94a3b8">Comprehensive</text>
+        <text x="795" y="775" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#94a3b8">All validators</text>
+        
+        <!-- Performance metrics -->
+        <rect x="1270" y="130" width="120" height="200" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+        <text x="1330" y="160" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#ffffff">
+            ⚡ METRICS
+        </text>
+        
+        <text x="1280" y="190" font-family="Arial, sans-serif" font-size="12" fill="#4ade80">Response:</text>
+        <text x="1370" y="190" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="end" fill="#ffffff">&lt;3s</text>
+        
+        <text x="1280" y="220" font-family="Arial, sans-serif" font-size="12" fill="#4ade80">Uptime:</text>
+        <text x="1370" y="220" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="end" fill="#ffffff">100%</text>
+        
+        <text x="1280" y="250" font-family="Arial, sans-serif" font-size="12" fill="#4ade80">Scaling:</text>
+        <text x="1370" y="250" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="end" fill="#ffffff">1-10</text>
+        
+        <text x="1280" y="280" font-family="Arial, sans-serif" font-size="12" fill="#4ade80">Memory:</text>
+        <text x="1370" y="280" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="end" fill="#ffffff">1GB</text>
+        
+        <text x="1280" y="310" font-family="Arial, sans-serif" font-size="12" fill="#4ade80">CPU:</text>
+        <text x="1370" y="310" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="end" fill="#ffffff">0.5</text>
+    </svg>
+
+    <script>
+        function downloadSVGAsPNG() {
+            const svg = document.getElementById('visualization');
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            // Scale factor for higher resolution (2x, 3x, or 4x for even higher quality)
+            const scaleFactor = 3;
+            
+            canvas.width = svg.width.baseVal.value * scaleFactor;
+            canvas.height = svg.height.baseVal.value * scaleFactor;
+            
+            // Scale the context to match the higher resolution
+            ctx.scale(scaleFactor, scaleFactor);
+            
+            img.onload = function() {
+                // Enable image smoothing for better quality
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                
+                ctx.drawImage(img, 0, 0);
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'mcp_architecture_updated.png';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 'image/png', 1.0); // Maximum quality PNG
+            };
+            
+            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+        }
+    </script>
+</body>
+</html>
