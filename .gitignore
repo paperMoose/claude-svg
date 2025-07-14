@@ -1,0 +1,33 @@
+# Generated visualization files
+*.html
+*.png
+*.svg.png
+
+# Keep the example/template files
+!example-*.html
+!template-*.html
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor directories and files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Keep important markdown files
+!README.md
+!CLAUDE.md
