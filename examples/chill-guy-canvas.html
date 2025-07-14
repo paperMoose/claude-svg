@@ -75,152 +75,195 @@
             ctx.ellipse(centerX, baseY + 20, 60, 10, 0, 0, Math.PI * 2);
             ctx.fill();
             
-            // Shoes (beige/tan)
+            // === HAND-TRACED CHARACTER ===
+            
+            // Shoes - traced organic shapes
             ctx.fillStyle = '#c8976d';
             // Left shoe
             ctx.beginPath();
-            ctx.ellipse(centerX - 25, baseY, 35, 18, 0, 0, Math.PI * 2);
-            ctx.fill();
-            // Right shoe  
-            ctx.beginPath();
-            ctx.ellipse(centerX + 25, baseY, 35, 18, 0, 0, Math.PI * 2);
+            ctx.moveTo(centerX - 55, baseY);
+            ctx.bezierCurveTo(centerX - 60, baseY - 10, centerX - 50, baseY - 18, centerX - 25, baseY - 15);
+            ctx.bezierCurveTo(centerX, baseY - 12, centerX + 5, baseY - 5, centerX - 5, baseY + 5);
+            ctx.bezierCurveTo(centerX - 15, baseY + 8, centerX - 40, baseY + 8, centerX - 55, baseY);
             ctx.fill();
             
-            // Jeans (light teal)
+            // Right shoe
+            ctx.beginPath();
+            ctx.moveTo(centerX + 5, baseY);
+            ctx.bezierCurveTo(centerX, baseY - 10, centerX + 10, baseY - 18, centerX + 25, baseY - 15);
+            ctx.bezierCurveTo(centerX + 50, baseY - 12, centerX + 55, baseY - 5, centerX + 45, baseY + 5);
+            ctx.bezierCurveTo(centerX + 35, baseY + 8, centerX + 15, baseY + 8, centerX + 5, baseY);
+            ctx.fill();
+            
+            // Jeans - traced leg shapes
             ctx.fillStyle = '#7fb3a3';
-            // Left leg
-            ctx.fillRect(centerX - 45, baseY - 90, 35, 90);
+            
+            // Left leg flowing from body
+            ctx.beginPath();
+            ctx.moveTo(centerX - 45, baseY - 110);
+            ctx.bezierCurveTo(centerX - 50, baseY - 100, centerX - 52, baseY - 50, centerX - 50, baseY - 10);
+            ctx.bezierCurveTo(centerX - 48, baseY, centerX - 30, baseY, centerX - 25, baseY - 10);
+            ctx.bezierCurveTo(centerX - 22, baseY - 50, centerX - 20, baseY - 100, centerX - 25, baseY - 110);
+            ctx.closePath();
+            ctx.fill();
+            
             // Right leg
-            ctx.fillRect(centerX + 10, baseY - 90, 35, 90);
-            // Waistband
-            ctx.fillRect(centerX - 45, baseY - 110, 90, 25);
-            
-            // Round the jean corners
             ctx.beginPath();
-            ctx.roundRect(centerX - 45, baseY - 90, 35, 90, 8);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.roundRect(centerX + 10, baseY - 90, 35, 90, 8);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.roundRect(centerX - 45, baseY - 110, 90, 25, 8);
+            ctx.moveTo(centerX + 10, baseY - 110);
+            ctx.bezierCurveTo(centerX + 15, baseY - 100, centerX + 18, baseY - 50, centerX + 20, baseY - 10);
+            ctx.bezierCurveTo(centerX + 22, baseY, centerX + 40, baseY, centerX + 45, baseY - 10);
+            ctx.bezierCurveTo(centerX + 48, baseY - 50, centerX + 50, baseY - 100, centerX + 45, baseY - 110);
+            ctx.closePath();
             ctx.fill();
             
-            // Sweater body (grey)
+            // Waistband - connecting the legs
+            ctx.beginPath();
+            ctx.moveTo(centerX - 45, baseY - 110);
+            ctx.bezierCurveTo(centerX - 50, baseY - 120, centerX - 30, baseY - 125, centerX, baseY - 125);
+            ctx.bezierCurveTo(centerX + 30, baseY - 125, centerX + 50, baseY - 120, centerX + 45, baseY - 110);
+            ctx.bezierCurveTo(centerX + 30, baseY - 115, centerX, baseY - 115, centerX - 25, baseY - 110);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Main body outline - one flowing shape
             ctx.fillStyle = '#9e9e9e';
             ctx.beginPath();
-            ctx.ellipse(centerX, baseY - 160, 65, 55, 0, 0, Math.PI * 2);
+            // Start from left waist
+            ctx.moveTo(centerX - 45, baseY - 110);
+            // Left side up to armpit
+            ctx.bezierCurveTo(centerX - 50, baseY - 130, centerX - 55, baseY - 160, centerX - 60, baseY - 190);
+            // Left shoulder
+            ctx.bezierCurveTo(centerX - 65, baseY - 210, centerX - 50, baseY - 220, centerX - 35, baseY - 215);
+            // Top of sweater (neck area)
+            ctx.bezierCurveTo(centerX - 20, baseY - 218, centerX + 20, baseY - 218, centerX + 35, baseY - 215);
+            // Right shoulder
+            ctx.bezierCurveTo(centerX + 50, baseY - 220, centerX + 65, baseY - 210, centerX + 60, baseY - 190);
+            // Right side down to waist
+            ctx.bezierCurveTo(centerX + 55, baseY - 160, centerX + 50, baseY - 130, centerX + 45, baseY - 110);
+            // Bottom of sweater
+            ctx.bezierCurveTo(centerX + 30, baseY - 115, centerX - 30, baseY - 115, centerX - 45, baseY - 110);
             ctx.fill();
             
-            // Striped collar
-            ctx.fillStyle = '#757575';
+            // Arms - naturally flowing from shoulders
+            // Left arm
             ctx.beginPath();
-            ctx.ellipse(centerX, baseY - 220, 50, 12, 0, 0, Math.PI * 2);
+            ctx.moveTo(centerX - 50, baseY - 200);
+            ctx.bezierCurveTo(centerX - 70, baseY - 195, centerX - 80, baseY - 180, centerX - 82, baseY - 160);
+            ctx.bezierCurveTo(centerX - 85, baseY - 140, centerX - 80, baseY - 120, centerX - 70, baseY - 110);
+            ctx.bezierCurveTo(centerX - 65, baseY - 115, centerX - 60, baseY - 125, centerX - 58, baseY - 145);
+            ctx.bezierCurveTo(centerX - 56, baseY - 165, centerX - 50, baseY - 185, centerX - 45, baseY - 195);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Right arm
+            ctx.beginPath();
+            ctx.moveTo(centerX + 50, baseY - 200);
+            ctx.bezierCurveTo(centerX + 70, baseY - 195, centerX + 80, baseY - 180, centerX + 82, baseY - 160);
+            ctx.bezierCurveTo(centerX + 85, baseY - 140, centerX + 80, baseY - 120, centerX + 70, baseY - 110);
+            ctx.bezierCurveTo(centerX + 65, baseY - 115, centerX + 60, baseY - 125, centerX + 58, baseY - 145);
+            ctx.bezierCurveTo(centerX + 56, baseY - 165, centerX + 50, baseY - 185, centerX + 45, baseY - 195);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Hands (simple circles for now)
+            ctx.fillStyle = '#c8976d';
+            ctx.beginPath();
+            ctx.arc(centerX - 75, baseY - 125, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(centerX + 75, baseY - 125, 8, 0, Math.PI * 2);
             ctx.fill();
             
             // Collar stripes
-            ctx.fillStyle = '#555';
-            ctx.fillRect(centerX - 50, baseY - 225, 100, 2);
-            ctx.fillRect(centerX - 50, baseY - 221, 100, 2);
-            ctx.fillRect(centerX - 50, baseY - 217, 100, 2);
-            
-            // Arms
-            ctx.fillStyle = '#9e9e9e';
-            // Left arm
+            ctx.fillStyle = '#757575';
             ctx.beginPath();
-            ctx.ellipse(centerX - 55, baseY - 180, 18, 35, 0, 0, Math.PI * 2);
-            ctx.fill();
-            // Right arm
-            ctx.beginPath();
-            ctx.ellipse(centerX + 55, baseY - 180, 18, 35, 0, 0, Math.PI * 2);
+            ctx.moveTo(centerX - 30, baseY - 210);
+            ctx.bezierCurveTo(centerX - 15, baseY - 215, centerX + 15, baseY - 215, centerX + 30, baseY - 210);
+            ctx.bezierCurveTo(centerX + 25, baseY - 205, centerX - 25, baseY - 205, centerX - 30, baseY - 210);
             ctx.fill();
             
-            // Hands in pockets
-            ctx.fillStyle = '#c8976d';
-            // Left hand
-            ctx.beginPath();
-            ctx.arc(centerX - 50, baseY - 150, 10, 0, Math.PI * 2);
-            ctx.fill();
-            // Right hand
-            ctx.beginPath();
-            ctx.arc(centerX + 50, baseY - 150, 10, 0, Math.PI * 2);
-            ctx.fill();
+            // === HEAD - HAND TRACED ===
             
-            // Head (main oval)
+            // Main head shape - dog-like profile
             ctx.fillStyle = '#c8976d';
             ctx.beginPath();
-            ctx.ellipse(centerX, baseY - 270, 50, 40, 0, 0, Math.PI * 2);
+            // Start at back of head
+            ctx.moveTo(centerX + 35, baseY - 280);
+            // Top of head
+            ctx.bezierCurveTo(centerX + 40, baseY - 300, centerX + 20, baseY - 315, centerX - 5, baseY - 310);
+            // Left side of head going down
+            ctx.bezierCurveTo(centerX - 25, baseY - 308, centerX - 40, baseY - 295, centerX - 45, baseY - 275);
+            // Where head meets snout
+            ctx.bezierCurveTo(centerX - 48, baseY - 265, centerX - 50, baseY - 250, centerX - 55, baseY - 240);
+            // Snout outline - the key characteristic!
+            ctx.bezierCurveTo(centerX - 70, baseY - 235, centerX - 85, baseY - 240, centerX - 90, baseY - 250);
+            // Bottom of snout
+            ctx.bezierCurveTo(centerX - 88, baseY - 260, centerX - 80, baseY - 265, centerX - 70, baseY - 262);
+            // Under chin area
+            ctx.bezierCurveTo(centerX - 55, baseY - 260, centerX - 40, baseY - 255, centerX - 25, baseY - 245);
+            // Neck connection to body
+            ctx.bezierCurveTo(centerX - 15, baseY - 240, centerX + 5, baseY - 240, centerX + 15, baseY - 245);
+            // Right side of head/neck
+            ctx.bezierCurveTo(centerX + 25, baseY - 250, centerX + 30, baseY - 265, centerX + 35, baseY - 280);
             ctx.fill();
             
-            // Snout (extending left)
-            ctx.beginPath();
-            ctx.ellipse(centerX - 20, baseY - 255, 35, 20, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Black nose area
+            // Black nose at end of snout
             ctx.fillStyle = '#1a1a1a';
             ctx.beginPath();
-            ctx.ellipse(centerX - 40, baseY - 250, 15, 10, 0, 0, Math.PI * 2);
+            ctx.moveTo(centerX - 88, baseY - 255);
+            ctx.bezierCurveTo(centerX - 92, baseY - 250, centerX - 90, baseY - 245, centerX - 85, baseY - 248);
+            ctx.bezierCurveTo(centerX - 80, baseY - 250, centerX - 82, baseY - 258, centerX - 88, baseY - 255);
             ctx.fill();
             
-            // Ears
+            // Ears - simple organic shapes
             ctx.fillStyle = '#b8956f';
             // Left ear
-            ctx.save();
-            ctx.translate(centerX - 20, baseY - 300);
-            ctx.rotate(-0.3); // -15 degrees
             ctx.beginPath();
-            ctx.ellipse(0, 0, 10, 18, 0, 0, Math.PI * 2);
+            ctx.moveTo(centerX - 15, baseY - 305);
+            ctx.bezierCurveTo(centerX - 25, baseY - 315, centerX - 30, baseY - 300, centerX - 28, baseY - 285);
+            ctx.bezierCurveTo(centerX - 25, baseY - 275, centerX - 18, baseY - 280, centerX - 15, baseY - 305);
             ctx.fill();
-            ctx.restore();
             
             // Right ear
-            ctx.save();
-            ctx.translate(centerX + 20, baseY - 300);
-            ctx.rotate(0.3); // 15 degrees
             ctx.beginPath();
-            ctx.ellipse(0, 0, 10, 18, 0, 0, Math.PI * 2);
+            ctx.moveTo(centerX + 15, baseY - 305);
+            ctx.bezierCurveTo(centerX + 25, baseY - 315, centerX + 30, baseY - 300, centerX + 28, baseY - 285);
+            ctx.bezierCurveTo(centerX + 25, baseY - 275, centerX + 18, baseY - 280, centerX + 15, baseY - 305);
             ctx.fill();
-            ctx.restore();
             
-            // Eyes
+            // Eyes - simple but expressive
             ctx.fillStyle = 'white';
-            // Left eye white
             ctx.beginPath();
-            ctx.arc(centerX - 10, baseY - 275, 8, 0, Math.PI * 2);
+            ctx.arc(centerX - 20, baseY - 285, 6, 0, Math.PI * 2);
             ctx.fill();
-            // Right eye white
             ctx.beginPath();
-            ctx.arc(centerX + 20, baseY - 275, 8, 0, Math.PI * 2);
+            ctx.arc(centerX + 5, baseY - 285, 6, 0, Math.PI * 2);
             ctx.fill();
             
-            // Eye pupils
+            // Pupils
             ctx.fillStyle = '#1a1a1a';
-            // Left pupil
             ctx.beginPath();
-            ctx.arc(centerX - 10, baseY - 275, 5, 0, Math.PI * 2);
+            ctx.arc(centerX - 20, baseY - 285, 3, 0, Math.PI * 2);
             ctx.fill();
-            // Right pupil
             ctx.beginPath();
-            ctx.arc(centerX + 20, baseY - 275, 5, 0, Math.PI * 2);
+            ctx.arc(centerX + 5, baseY - 285, 3, 0, Math.PI * 2);
             ctx.fill();
             
             // Eye highlights
             ctx.fillStyle = 'white';
-            // Left highlight
             ctx.beginPath();
-            ctx.arc(centerX - 8, baseY - 277, 1.5, 0, Math.PI * 2);
+            ctx.arc(centerX - 19, baseY - 287, 1, 0, Math.PI * 2);
             ctx.fill();
-            // Right highlight
             ctx.beginPath();
-            ctx.arc(centerX + 22, baseY - 277, 1.5, 0, Math.PI * 2);
+            ctx.arc(centerX + 6, baseY - 287, 1, 0, Math.PI * 2);
             ctx.fill();
             
-            // Subtle smile
+            // Subtle smile on the snout
             ctx.strokeStyle = '#1a1a1a';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 1.5;
             ctx.beginPath();
-            ctx.arc(centerX - 25, baseY - 255, 8, 0.2, 0.8);
+            ctx.moveTo(centerX - 75, baseY - 252);
+            ctx.bezierCurveTo(centerX - 70, baseY - 248, centerX - 65, baseY - 250, centerX - 62, baseY - 252);
             ctx.stroke();
         }
 
