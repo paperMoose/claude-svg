@@ -139,7 +139,13 @@
 </head>
 <body>
     <div id="controls">
-        <h3>Export Options</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin: 0;">Export Options</h3>
+            <button onclick="toggleControls()" style="background: none; border: 1px solid #475569; color: #94a3b8; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                <span id="toggle-text">Hide</span>
+            </button>
+        </div>
+        <div id="controls-content">
         
         <div class="control-group">
             <label for="filename">Filename</label>
@@ -197,6 +203,7 @@
         </div>
         
         <button id="download-btn" onclick="downloadVisualization()">Download</button>
+        </div>
     </div>
     
     <div id="visualization-container">
@@ -224,6 +231,23 @@
             defaultScale: 3,
             defaultQuality: 0.9
         };
+        
+        // Toggle controls visibility
+        function toggleControls() {
+            const content = document.getElementById('controls-content');
+            const toggleText = document.getElementById('toggle-text');
+            const controls = document.getElementById('controls');
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                toggleText.textContent = 'Hide';
+                controls.style.minWidth = '250px';
+            } else {
+                content.style.display = 'none';
+                toggleText.textContent = 'Show';
+                controls.style.minWidth = 'auto';
+            }
+        }
         
         // Crop state
         let cropState = {

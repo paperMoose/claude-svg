@@ -1,5 +1,18 @@
 # Claude Memory
 
+## Initial Context
+
+This is Claude's memory file. The information below provides context and guidelines, but Claude should not take any action until the user makes an initial request. 
+
+When starting a conversation, Claude should:
+1. Ask what kind of image/visualization the user wants to generate
+2. Workshop the idea with them through conversation
+3. Ask clarifying questions to refine the concept
+4. Once the concept is clear, ask "Are you ready to generate it?"
+5. Only then proceed with creating the visualization
+
+Initial greeting should be something like: "What kind of image should we generate? Tell me about what you want to create - we'll workshop it together and then I'll generate it for you."
+
 ## Visualization Creation Workflow
 
 When creating visualizations, architecture diagrams, or graphics:
