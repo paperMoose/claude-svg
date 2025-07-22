@@ -158,6 +158,7 @@
                 <option value="png">PNG (Recommended)</option>
                 <option value="jpeg">JPEG</option>
                 <option value="webp">WebP</option>
+                <option value="svg">SVG (Vector)</option>
             </select>
         </div>
         
@@ -420,13 +421,29 @@
             const svg = document.getElementById('visualization');
             const container = document.getElementById('visualization-container');
             const svgData = new XMLSerializer().serializeToString(svg);
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
             
             // Get user options
             const filename = document.getElementById('filename').value || config.defaultFilename;
             const format = document.getElementById('format').value;
+            
+            // Handle SVG download separately
+            if (format === 'svg') {
+                const blob = new Blob([svgData], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${filename}.svg`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                return;
+            }
+            
+            // Continue with raster format export
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
             const scaleFactor = parseInt(document.getElementById('scale').value);
             const quality = parseFloat(document.getElementById('quality').value);
             const rotation = parseFloat(document.getElementById('rotation').value);
