@@ -59,6 +59,54 @@ When creating visualizations, architecture diagrams, or graphics:
 - **Example good routing**: `M100,50 L200,50 L200,150` (horizontal, then vertical)
 - **Example bad routing**: `M100,50 Q150,100 200,150` (curved - never do this)
 - **Avoid diagonal lines when possible** - Use horizontal/vertical segments
+  1. Simplicity First
+
+  - Show only essential components needed to communicate the concept
+  - Remove unnecessary details that don't add to understanding
+  - Focus on the core pattern or flow being illustrated
+  - When asked to simplify, aggressively reduce complexity
+
+  2. Prevent Visual Overlaps
+
+  - No overlapping lines - route connections cleanly
+  - Elements should never overlap with each other
+  - Text must not overlap with shapes or lines
+  - Keep adequate spacing (30px minimum) between all elements
+
+  3. Respect Container Boundaries
+
+  - All elements must fit within their parent containers
+  - Text must stay within shape boundaries
+  - Container boxes must fully encompass their contents with padding
+  - Extend container sizes rather than letting content overflow
+
+  4. Clear Visual Hierarchy
+
+  - Make important information larger and more prominent
+  - Use consistent sizing for similar elements
+  - Key messages (like callout boxes) should have larger, readable text
+  - Group related elements visually
+
+  5. Strategic Use of Color
+
+  - Use different colors to distinguish between element types
+  - Apply color consistently for the same type of element
+  - Use semi-transparent backgrounds for visual depth
+  - Ensure sufficient contrast for readability
+
+  6. Clean Layout Principles
+
+  - Align elements on a clear grid when possible
+  - Maintain consistent spacing between elements
+  - Position labels close to but not overlapping their subjects
+  - Keep connection lines as simple as possible (straight lines, minimal turns)
+
+  7. Text Readability
+
+  - Ensure all text is large enough to read
+  - Position text with adequate padding from edges
+  - Use appropriate font sizes for hierarchy (titles > labels > details)
+  - Never let text extend outside its container
 
 **FINAL CHECK before rendering:**
 1. Check all shapes have 30px+ padding
