@@ -153,6 +153,7 @@ class BulkSelection {
                 
                 // Check if element is inside selection rectangle
                 if (this.isIntersecting(selRect, elementRect)) {
+                    console.log('Element selected:', element.tagName, element);
                     this.selectedElements.add(element);
                     element.classList.add('bulk-selected');
                 }
