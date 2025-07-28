@@ -42,13 +42,24 @@ class BulkSelection {
         // We'll hook into existing mouse events
         this.svg.addEventListener('mousedown', this.handleMouseDown.bind(this), true);
         document.addEventListener('mousemove', this.handleMouseMove.bind(this));
-        document.addEventListener('mouseup', this.handleMouseUp.bind(this));
+        document.addEventListener('mouseup', this.handleMouseUp.bind(this), true); // Use capture phase
         
         // Keyboard shortcuts for selection
         document.addEventListener('keydown', this.handleKeyDown.bind(this));
     }
     
     handleMouseDown(e) {
+        // Check if we're clicking on a selected element for group drag
+        if (document.querySelector('.tool-btn[data-tool="select"]').classList.contains('active') && 
+            this.selectedElements.has(e.target) && 
+            this.selectedElements.size > 1 &&
+            !(e.ctrlKey || e.metaKey)) {
+            
+            console.log('MouseDown on selected element - starting group drag');
+            this.startMultiDrag(e);
+            return;
+        }
+        
         // Only start selection rectangle on empty canvas with select tool active
         if (e.target === this.svg && document.querySelector('.tool-btn[data-tool="select"]').classList.contains('active')) {
             // Check if we're clicking on empty space (not on any element)
@@ -66,7 +77,6 @@ class BulkSelection {
             e.preventDefault();
             e.stopPropagation();
         }
-        // Don't handle clicking on selected elements here - let group selection box handle it
     }
     
     handleMouseMove(e) {
@@ -89,6 +99,8 @@ class BulkSelection {
             this.updateSelection();
         }
         else if (this.isDraggingMultiple) {
+            console.log('handleMouseMove: isDraggingMultiple is true, calling handleMultiDrag');
+            console.log('Current drag state - dragStartX:', this.dragStartX, 'dragStartY:', this.dragStartY);
             this.handleMultiDrag(e);
         }
     }
@@ -99,26 +111,34 @@ class BulkSelection {
             this.isSelecting = false;
             this.selectionRect.style.display = 'none';
             
+            // CRITICAL: Stop the event from bubbling to prevent SVG click handler
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            
             // Don't call updateSelection here - we already have the selected elements
             console.log('selectedElements.size at mouseUp:', this.selectedElements.size);
             
-            // If we have selected elements, create a group selection box
-            if (this.selectedElements.size > 0) {
-                console.log('Creating group selection box...');
-                // Clear the single selection
-                if (window.deselectElement) {
-                    window.deselectElement();
-                }
-                
-                // Create or update the group selection box
-                this.showGroupSelectionBox();
-            } else {
-                console.log('No elements selected, not creating group selection box');
-            }
+            // Set flag to prevent immediate clearing by SVG click handler
+            window.bulkSelectionJustCompleted = true;
+            setTimeout(() => {
+                window.bulkSelectionJustCompleted = false;
+            }, 100); // Increased delay to prevent clearing during initial click
+            
+            // Bulk selection complete - elements now have visual feedback (green glow)
+            // No red rectangle needed - user can click on any selected element to drag the group
+            console.log('Bulk selection complete:', this.selectedElements.size, 'elements selected');
+            
+            return false; // Additional prevention
         }
         else if (this.isDraggingMultiple) {
             this.isDraggingMultiple = false;
             this.dragStartPositions.clear();
+            
+            // Reset protection after drag completes with a longer delay
+            setTimeout(() => {
+                window.bulkSelectionJustCompleted = false;
+            }, 150); // Longer delay to prevent clearing after drag
         }
     }
     
@@ -160,7 +180,6 @@ class BulkSelection {
                 
                 // Check if element is inside selection rectangle
                 if (this.isIntersecting(selRect, elementRect)) {
-                    console.log('Element selected:', element.tagName, element);
                     this.selectedElements.add(element);
                     element.classList.add('bulk-selected');
                 }
@@ -181,6 +200,9 @@ class BulkSelection {
     }
     
     clearMultiSelection() {
+        console.log('BulkSelection.clearMultiSelection() called');
+        console.trace('clearMultiSelection called from:');
+        
         this.selectedElements.forEach(element => {
             element.classList.remove('bulk-selected');
         });
@@ -201,33 +223,77 @@ class BulkSelection {
     }
     
     startMultiDrag(e) {
-        if (this.selectedElements.size <= 1) return;
+        console.log('=== startMultiDrag ENTRY ===');
+        console.log('startMultiDrag function called!');
+        console.log('Event object:', e);
+        console.log('Selected elements count:', this.selectedElements.size);
         
-        // Save state before dragging
-        this.undoSystem.saveState('before_bulk_drag');
+        if (this.selectedElements.size <= 1) {
+            console.log('startMultiDrag: Not enough elements selected, returning');
+            return;
+        }
         
-        this.isDraggingMultiple = true;
-        this.dragStartX = e.clientX;
-        this.dragStartY = e.clientY;
-        
-        // Store initial positions of all selected elements
-        this.selectedElements.forEach(element => {
-            const pos = this.getElementPosition(element);
-            this.dragStartPositions.set(element, pos);
-        });
-        
-        e.preventDefault();
-        e.stopPropagation();
+        try {
+            console.log('startMultiDrag called with event:', e);
+            console.log('Mouse coordinates:', e.clientX, e.clientY);
+            
+            // Save state before dragging
+            this.undoSystem.saveState('before_bulk_drag');
+            console.log('Undo state saved');
+            
+            this.isDraggingMultiple = true;
+            this.dragStartX = e.clientX;
+            this.dragStartY = e.clientY;
+            
+            console.log('Set isDraggingMultiple:', this.isDraggingMultiple);
+            console.log('Set dragStart coordinates:', this.dragStartX, this.dragStartY);
+            
+            // Set protection flag to prevent clearing during drag
+            window.bulkSelectionJustCompleted = true;
+            console.log('Protection flag set during drag start');
+            
+            // Store initial positions of all selected elements
+            console.log('Storing positions for', this.selectedElements.size, 'elements');
+            this.selectedElements.forEach(element => {
+                const pos = this.getElementPosition(element);
+                this.dragStartPositions.set(element, pos);
+            });
+            
+            if (e.preventDefault) e.preventDefault();
+            if (e.stopPropagation) e.stopPropagation();
+            
+            console.log('=== startMultiDrag COMPLETE ===');
+        } catch (error) {
+            console.error('Error in startMultiDrag:', error);
+        }
     }
     
     handleMultiDrag(e) {
+        console.log('handleMultiDrag called with event:', e);
+        console.log('Drag start position:', this.dragStartX, this.dragStartY);
+        console.log('Current mouse position:', e.clientX, e.clientY);
+        
         const deltaX = e.clientX - this.dragStartX;
         const deltaY = e.clientY - this.dragStartY;
+        
+        console.log('Calculated delta:', deltaX, deltaY);
+        
+        // Check for invalid delta values
+        if (isNaN(deltaX) || isNaN(deltaY)) {
+            console.error('Invalid delta values detected:', { deltaX, deltaY, dragStartX: this.dragStartX, dragStartY: this.dragStartY, clientX: e.clientX, clientY: e.clientY });
+            return; // Don't proceed with invalid values
+        }
+        
+        // Maintain protection during drag
+        window.bulkSelectionJustCompleted = true;
         
         // Move all selected elements
         this.selectedElements.forEach(element => {
             const startPos = this.dragStartPositions.get(element);
-            if (!startPos) return;
+            if (!startPos) {
+                console.warn('No start position found for element:', element);
+                return;
+            }
             
             this.updateElementPosition(element, startPos, deltaX, deltaY);
         });
@@ -240,64 +306,99 @@ class BulkSelection {
     
     getElementPosition(element) {
         if (element.tagName === 'rect') {
-            return {
-                x: parseFloat(element.getAttribute('x') || 0),
-                y: parseFloat(element.getAttribute('y') || 0)
-            };
+            const x = parseFloat(element.getAttribute('x') || '0');
+            const y = parseFloat(element.getAttribute('y') || '0');
+            return { x, y };
         } else if (element.tagName === 'circle') {
-            return {
-                cx: parseFloat(element.getAttribute('cx') || 0),
-                cy: parseFloat(element.getAttribute('cy') || 0)
-            };
+            const cx = parseFloat(element.getAttribute('cx') || '0');
+            const cy = parseFloat(element.getAttribute('cy') || '0');
+            return { cx, cy };
         } else if (element.tagName === 'text') {
-            return {
-                x: parseFloat(element.getAttribute('x') || 0),
-                y: parseFloat(element.getAttribute('y') || 0)
-            };
+            const x = parseFloat(element.getAttribute('x') || '0');
+            const y = parseFloat(element.getAttribute('y') || '0');
+            return { x, y };
         } else if (element.tagName === 'path') {
-            // Store original path data
-            element.setAttribute('data-original-path', element.getAttribute('d'));
-            const bounds = SVGUtils.getElementBounds(element);
-            return bounds ? { centerX: bounds.centerX, centerY: bounds.centerY } : { centerX: 0, centerY: 0 };
+            // Store original path data if not already stored
+            if (!element.getAttribute('data-original-path')) {
+                element.setAttribute('data-original-path', element.getAttribute('d') || '');
+            }
+            
+            try {
+                const bounds = element.getBBox();
+                const centerX = bounds.x + bounds.width / 2;
+                const centerY = bounds.y + bounds.height / 2;
+                return { centerX, centerY };
+            } catch (e) {
+                console.warn('Could not get bbox for path, using fallback:', e);
+                return { centerX: 0, centerY: 0 };
+            }
         } else if (element.tagName === 'line') {
-            return {
-                x1: parseFloat(element.getAttribute('x1') || 0),
-                y1: parseFloat(element.getAttribute('y1') || 0),
-                x2: parseFloat(element.getAttribute('x2') || 0),
-                y2: parseFloat(element.getAttribute('y2') || 0)
-            };
+            const x1 = parseFloat(element.getAttribute('x1') || '0');
+            const y1 = parseFloat(element.getAttribute('y1') || '0');
+            const x2 = parseFloat(element.getAttribute('x2') || '0');
+            const y2 = parseFloat(element.getAttribute('y2') || '0');
+            return { x1, y1, x2, y2 };
         } else if (element.tagName === 'g') {
             // Handle groups
             const transform = element.getAttribute('transform') || '';
-            const match = transform.match(/translate\(([^,]+),([^)]+)\)/);
-            return {
-                x: match ? parseFloat(match[1]) : 0,
-                y: match ? parseFloat(match[2]) : 0
-            };
+            const match = transform.match(/translate\(([^,\s]+)[,\s]+([^)]+)\)/);
+            const x = match ? parseFloat(match[1]) : 0;
+            const y = match ? parseFloat(match[2]) : 0;
+            return { x, y };
         }
+        
         return { x: 0, y: 0 };
     }
     
     updateElementPosition(element, startPos, deltaX, deltaY) {
+        // Convert screen coordinates to SVG coordinates
+        const viewBox = this.svg.viewBox.baseVal;
+        const svgRect = this.svg.getBoundingClientRect();
+        const scaleX = viewBox.width / svgRect.width;
+        const scaleY = viewBox.height / svgRect.height;
+        
+        const svgDeltaX = deltaX * scaleX;
+        const svgDeltaY = deltaY * scaleY;
+        
         if (element.tagName === 'rect') {
-            element.setAttribute('x', startPos.x + deltaX);
-            element.setAttribute('y', startPos.y + deltaY);
+            const newX = startPos.x + svgDeltaX;
+            const newY = startPos.y + svgDeltaY;
+            element.setAttribute('x', newX);
+            element.setAttribute('y', newY);
         } else if (element.tagName === 'circle') {
-            element.setAttribute('cx', startPos.cx + deltaX);
-            element.setAttribute('cy', startPos.cy + deltaY);
+            const newCx = startPos.cx + svgDeltaX;
+            const newCy = startPos.cy + svgDeltaY;
+            element.setAttribute('cx', newCx);
+            element.setAttribute('cy', newCy);
         } else if (element.tagName === 'text') {
-            element.setAttribute('x', startPos.x + deltaX);
-            element.setAttribute('y', startPos.y + deltaY);
+            const newX = startPos.x + svgDeltaX;
+            const newY = startPos.y + svgDeltaY;
+            element.setAttribute('x', newX);
+            element.setAttribute('y', newY);
         } else if (element.tagName === 'path') {
-            // Use SVGUtils for path updates
-            SVGUtils.updatePathPosition(element, deltaX, deltaY);
+            // For paths, we need to handle center-based positioning differently
+            if (startPos.centerX !== undefined && startPos.centerY !== undefined) {
+                try {
+                    SVGUtils.updatePathPosition(element, svgDeltaX, svgDeltaY);
+                } catch (e) {
+                    console.error('Error updating path position:', e);
+                }
+            } else {
+                console.warn('Path missing centerX/centerY in startPos');
+            }
         } else if (element.tagName === 'line') {
-            element.setAttribute('x1', startPos.x1 + deltaX);
-            element.setAttribute('y1', startPos.y1 + deltaY);
-            element.setAttribute('x2', startPos.x2 + deltaX);
-            element.setAttribute('y2', startPos.y2 + deltaY);
+            const newX1 = startPos.x1 + svgDeltaX;
+            const newY1 = startPos.y1 + svgDeltaY;
+            const newX2 = startPos.x2 + svgDeltaX;
+            const newY2 = startPos.y2 + svgDeltaY;
+            element.setAttribute('x1', newX1);
+            element.setAttribute('y1', newY1);
+            element.setAttribute('x2', newX2);
+            element.setAttribute('y2', newY2);
         } else if (element.tagName === 'g') {
-            element.setAttribute('transform', `translate(${startPos.x + deltaX}, ${startPos.y + deltaY})`);
+            const newX = startPos.x + svgDeltaX;
+            const newY = startPos.y + svgDeltaY;
+            element.setAttribute('transform', `translate(${newX}, ${newY})`);
         }
     }
     

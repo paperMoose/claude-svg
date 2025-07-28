@@ -34,38 +34,11 @@ class GroupSelectionBox {
             pointer-events: all;
             cursor: move;
             z-index: 9999;
+            display: block;
         `;
         
-        // Add resize handles
-        const handles = ['nw', 'ne', 'sw', 'se', 'n', 's', 'e', 'w'];
-        handles.forEach(position => {
-            const handle = document.createElement('div');
-            handle.className = `resize-handle ${position}`;
-            handle.dataset.position = position;
-            handle.style.cssText = `
-                position: absolute;
-                width: 8px;
-                height: 8px;
-                background: #6366f1;
-                border: 1px solid white;
-                border-radius: 2px;
-                pointer-events: all;
-            `;
-            
-            // Position handles
-            switch(position) {
-                case 'nw': handle.style.cssText += 'top: -4px; left: -4px; cursor: nw-resize;'; break;
-                case 'ne': handle.style.cssText += 'top: -4px; right: -4px; cursor: ne-resize;'; break;
-                case 'sw': handle.style.cssText += 'bottom: -4px; left: -4px; cursor: sw-resize;'; break;
-                case 'se': handle.style.cssText += 'bottom: -4px; right: -4px; cursor: se-resize;'; break;
-                case 'n': handle.style.cssText += 'top: -4px; left: 50%; transform: translateX(-50%); cursor: n-resize;'; break;
-                case 's': handle.style.cssText += 'bottom: -4px; left: 50%; transform: translateX(-50%); cursor: s-resize;'; break;
-                case 'e': handle.style.cssText += 'right: -4px; top: 50%; transform: translateY(-50%); cursor: e-resize;'; break;
-                case 'w': handle.style.cssText += 'left: -4px; top: 50%; transform: translateY(-50%); cursor: w-resize;'; break;
-            }
-            
-            this.container.appendChild(handle);
-        });
+        // TEMPORARILY SKIP RESIZE HANDLES TO TEST IF THEY'RE CAUSING THE ISSUE
+        console.log('Container created without resize handles for testing');
         
         document.body.appendChild(this.container);
         console.log('Container appended to body:', this.container);
@@ -396,6 +369,8 @@ class GroupSelectionBox {
     }
     
     hide() {
+        console.log('GroupSelectionBox.hide() called - hiding container');
+        console.trace('Hide called from:');
         this.container.style.display = 'none';
     }
     
