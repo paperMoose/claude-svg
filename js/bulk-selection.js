@@ -16,6 +16,9 @@ class BulkSelection {
         this.isDraggingMultiple = false;
         this.dragStartPositions = new Map();
         
+        // Group selection box
+        this.groupSelectionBox = null;
+        
         this.setupEventListeners();
         this.createSelectionRectangle();
     }
@@ -63,10 +66,7 @@ class BulkSelection {
             e.preventDefault();
             e.stopPropagation();
         }
-        // Check if clicking on a selected element (for multi-drag)
-        else if (this.selectedElements.has(e.target) && this.selectedElements.size > 1) {
-            this.startMultiDrag(e);
-        }
+        // Don't handle clicking on selected elements here - let group selection box handle it
     }
     
     handleMouseMove(e) {
@@ -101,12 +101,15 @@ class BulkSelection {
             // Final selection update
             this.updateSelection();
             
-            // If we have multiple selected elements, prevent the normal selection
-            if (this.selectedElements.size > 1) {
+            // If we have selected elements, create a group selection box
+            if (this.selectedElements.size > 0) {
                 // Clear the single selection
                 if (window.deselectElement) {
                     window.deselectElement();
                 }
+                
+                // Create or update the group selection box
+                this.showGroupSelectionBox();
             }
         }
         else if (this.isDraggingMultiple) {
@@ -174,6 +177,12 @@ class BulkSelection {
             element.classList.remove('bulk-selected');
         });
         this.selectedElements.clear();
+        
+        // Destroy group selection box if it exists
+        if (this.groupSelectionBox) {
+            this.groupSelectionBox.destroy();
+            this.groupSelectionBox = null;
+        }
     }
     
     updateVisualFeedback() {
@@ -367,6 +376,20 @@ class BulkSelection {
         this.selectedElements.delete(element);
         element.classList.remove('bulk-selected');
         this.updateVisualFeedback();
+    }
+    
+    // Show group selection box for selected elements
+    showGroupSelectionBox() {
+        // Destroy existing box if any
+        if (this.groupSelectionBox) {
+            this.groupSelectionBox.destroy();
+        }
+        
+        // Create new group selection box
+        if (this.selectedElements.size > 0) {
+            this.groupSelectionBox = new GroupSelectionBox(this.svg, this.selectedElements, this.undoSystem);
+            this.groupSelectionBox.show();
+        }
     }
 }
 
