@@ -380,6 +380,8 @@ class BulkSelection {
     
     // Show group selection box for selected elements
     showGroupSelectionBox() {
+        console.log('showGroupSelectionBox called with', this.selectedElements.size, 'elements');
+        
         // Destroy existing box if any
         if (this.groupSelectionBox) {
             this.groupSelectionBox.destroy();
@@ -387,8 +389,14 @@ class BulkSelection {
         
         // Create new group selection box
         if (this.selectedElements.size > 0) {
-            this.groupSelectionBox = new GroupSelectionBox(this.svg, this.selectedElements, this.undoSystem);
-            this.groupSelectionBox.show();
+            console.log('Creating GroupSelectionBox...');
+            try {
+                this.groupSelectionBox = new GroupSelectionBox(this.svg, this.selectedElements, this.undoSystem);
+                this.groupSelectionBox.show();
+                console.log('GroupSelectionBox created and shown');
+            } catch (error) {
+                console.error('Error creating GroupSelectionBox:', error);
+            }
         }
     }
 }

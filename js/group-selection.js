@@ -1,6 +1,7 @@
 // Group Selection Box for SVG Editor
 class GroupSelectionBox {
     constructor(svg, selectedElements, undoSystem) {
+        console.log('GroupSelectionBox constructor called');
         this.svg = svg;
         this.selectedElements = selectedElements;
         this.undoSystem = undoSystem;
@@ -19,6 +20,7 @@ class GroupSelectionBox {
         
         this.updateBounds();
         this.setupEventListeners();
+        console.log('GroupSelectionBox constructor completed');
     }
     
     createGroupBox() {
@@ -69,7 +71,10 @@ class GroupSelectionBox {
     }
     
     updateBounds() {
+        console.log('updateBounds called with', this.selectedElements.size, 'elements');
+        
         if (this.selectedElements.size === 0) {
+            console.log('No selected elements, hiding');
             this.hide();
             return;
         }
@@ -83,9 +88,14 @@ class GroupSelectionBox {
         const scaleX = svgRect.width / viewBox.width;
         const scaleY = svgRect.height / viewBox.height;
         
+        console.log('SVG rect:', svgRect);
+        console.log('ViewBox:', viewBox);
+        console.log('Scale:', scaleX, scaleY);
+        
         this.selectedElements.forEach(element => {
             try {
                 const bbox = element.getBBox();
+                console.log('Element bbox:', element.tagName, bbox);
                 const left = bbox.x;
                 const top = bbox.y;
                 const right = bbox.x + bbox.width;
@@ -96,17 +106,28 @@ class GroupSelectionBox {
                 maxX = Math.max(maxX, right);
                 maxY = Math.max(maxY, bottom);
             } catch (e) {
-                // Skip elements without getBBox
+                console.warn('Error getting bbox for element:', element, e);
             }
         });
         
+        console.log('Calculated bounds:', { minX, minY, maxX, maxY });
+        
         // Convert to screen coordinates and set container position
         const padding = 10;
-        this.container.style.left = (svgRect.left + minX * scaleX - padding) + 'px';
-        this.container.style.top = (svgRect.top + minY * scaleY - padding) + 'px';
-        this.container.style.width = ((maxX - minX) * scaleX + padding * 2) + 'px';
-        this.container.style.height = ((maxY - minY) * scaleY + padding * 2) + 'px';
+        const left = svgRect.left + minX * scaleX - padding;
+        const top = svgRect.top + minY * scaleY - padding;
+        const width = (maxX - minX) * scaleX + padding * 2;
+        const height = (maxY - minY) * scaleY + padding * 2;
+        
+        console.log('Setting container position:', { left, top, width, height });
+        
+        this.container.style.left = left + 'px';
+        this.container.style.top = top + 'px';
+        this.container.style.width = width + 'px';
+        this.container.style.height = height + 'px';
         this.container.style.display = 'block';
+        
+        console.log('Container should now be visible');
         
         // Store bounds for transform calculations
         this.bounds = { minX, minY, maxX, maxY, width: maxX - minX, height: maxY - minY };
