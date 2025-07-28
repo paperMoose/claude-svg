@@ -126,6 +126,11 @@ class BulkSelection {
         // Check each element in the SVG
         const elements = this.svg.querySelectorAll('rect, circle, text, path, line, polygon, polyline, g');
         elements.forEach(element => {
+            // Skip background elements
+            if (element.getAttribute('data-background') === 'true') {
+                return;
+            }
+            
             try {
                 // Get element bounds in viewport coordinates
                 const bbox = element.getBBox();
@@ -299,9 +304,13 @@ class BulkSelection {
             window.deselectElement();
         }
         
-        // Select all elements
+        // Select all elements except backgrounds
         const elements = this.svg.querySelectorAll('rect, circle, text, path, line, polygon, polyline, g');
         elements.forEach(element => {
+            // Skip background elements
+            if (element.getAttribute('data-background') === 'true') {
+                return;
+            }
             this.selectedElements.add(element);
             element.classList.add('bulk-selected');
         });
