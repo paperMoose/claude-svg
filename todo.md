@@ -5,8 +5,9 @@ Based on your requirements for intelligent flowchart editing, here's our step-by
 ## Current Status
 - ✅ Basic SVG editor loads flowchart content
 - ✅ Basic dragging works for rectangles and circles
-- ✅ Diamond/path dragging now works
+- ✅ Diamond/path dragging now works (fixed "flying off" issue)
 - ✅ UTF-8 encoding fixed (no more weird characters)
+- ✅ All basic dragging functionality working
 
 ## Goals
 Make the SVG editor respect existing connections so that when you move shapes, connected lines follow intelligently.
@@ -14,8 +15,16 @@ Make the SVG editor respect existing connections so that when you move shapes, c
 ## Step-by-Step Implementation Plan
 
 ### Phase 1: Foundation (Test Each Step)
-- [ ] **Test basic dragging works** - Confirm rectangles, circles, diamonds all drag properly
-- [ ] **Test flowchart loads correctly** - All elements visible, no encoding issues
+- [x] **Test basic dragging works** - Confirm rectangles, circles, diamonds all drag properly
+- [x] **Test flowchart loads correctly** - All elements visible, no encoding issues
+
+### Phase 1.5: Essential Editor Features (New Requirements)
+- [ ] **Add undo functionality** - Ctrl+Z to undo last action
+- [ ] **Add redo functionality** - Ctrl+Y to redo undone action
+- [ ] **Implement bulk selection** - Click-drag to select multiple elements with selection rectangle
+- [ ] **Add multi-element dragging** - Drag selected group while maintaining relative positions
+- [ ] **Test undo/redo system** - Verify undo works for moves, additions, deletions
+- [ ] **Test bulk selection** - Select multiple shapes and move them together
 
 ### Phase 2: Text Grouping
 - [ ] **Identify text-shape relationships** - Find which text belongs to which shape
