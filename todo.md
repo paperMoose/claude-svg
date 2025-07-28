@@ -4,10 +4,12 @@ Based on your requirements for intelligent flowchart editing, here's our step-by
 
 ## Current Status
 - ✅ Basic SVG editor loads flowchart content
-- ✅ Basic dragging works for rectangles and circles
-- ✅ Diamond/path dragging now works (fixed "flying off" issue)
+- ✅ Basic dragging works for ALL shapes (rectangles, circles, diamonds, lines)
+- ✅ Diamond/path dragging fixed (no more "flying off")
 - ✅ UTF-8 encoding fixed (no more weird characters)
-- ✅ All basic dragging functionality working
+- ✅ Modular architecture implemented
+- ✅ Complete undo/redo system with keyboard shortcuts
+- ✅ Code refactored into maintainable modules
 
 ## Goals
 Make the SVG editor respect existing connections so that when you move shapes, connected lines follow intelligently.
@@ -18,13 +20,19 @@ Make the SVG editor respect existing connections so that when you move shapes, c
 - [x] **Test basic dragging works** - Confirm rectangles, circles, diamonds all drag properly
 - [x] **Test flowchart loads correctly** - All elements visible, no encoding issues
 
-### Phase 1.5: Essential Editor Features (New Requirements)
-- [ ] **Add undo functionality** - Ctrl+Z to undo last action
-- [ ] **Add redo functionality** - Ctrl+Y to redo undone action
-- [ ] **Implement bulk selection** - Click-drag to select multiple elements with selection rectangle
-- [ ] **Add multi-element dragging** - Drag selected group while maintaining relative positions
-- [ ] **Test undo/redo system** - Verify undo works for moves, additions, deletions
-- [ ] **Test bulk selection** - Select multiple shapes and move them together
+### Phase 1.5: Essential Editor Features (COMPLETED ✅)
+- [x] **Add undo functionality** - Ctrl+Z to undo last action
+- [x] **Add redo functionality** - Ctrl+Y to redo undone action
+- [x] **Test undo/redo system** - Verified working for all operations
+- [x] **Refactor to modular architecture** - Better maintainability
+
+### Phase 1.6: Bulk Selection (NEXT PRIORITY 🎯)
+- [ ] **Implement selection rectangle** - Click-drag on empty canvas to draw selection box
+- [ ] **Multi-select detection** - Elements inside rectangle become selected
+- [ ] **Visual feedback** - Show all selected elements with consistent styling
+- [ ] **Multi-element dragging** - Drag any selected element moves entire group
+- [ ] **Maintain relative positions** - Elements keep their spacing when moved as group
+- [ ] **Undo/redo for bulk operations** - Single undo for entire group movement
 
 ### Phase 2: Text Grouping
 - [ ] **Identify text-shape relationships** - Find which text belongs to which shape
@@ -66,8 +74,43 @@ Make the SVG editor respect existing connections so that when you move shapes, c
   - Drag "Add measurable constraints" box → incoming red arrow should follow
   - Drag any shape → only connected elements should move, nothing else
 
+## Technical Implementation Details
+
+### Completed Architecture
+1. **Modular JS Files**
+   - `js/undo-system.js` - UndoSystem class with keyboard handling
+   - `js/drag-handler.js` - DragHandler class for all drag operations
+   - `js/svg-utils.js` - SVGUtils static methods for SVG manipulation
+
+2. **Key Fixes Implemented**
+   - **Diamond dragging**: Store original path data, calculate from original positions
+   - **UTF-8 encoding**: Removed deprecated `unescape()`, use proper encoding
+   - **State management**: Save state BEFORE operations, not after
+   - **Event handling**: Separated concerns, drag handler manages its own events
+
+3. **Undo System Design**
+   - Stack-based history (undoStack, redoStack)
+   - Saves full SVG innerHTML for simplicity
+   - Rebuilds interactions after restore
+   - Keyboard shortcuts work cross-platform
+
+### Upcoming Technical Challenges
+
+1. **Bulk Selection Implementation**
+   - Need selection rectangle overlay element
+   - Intersection detection for elements within rectangle
+   - Multiple selected elements array management
+   - Group movement coordinate calculations
+
+2. **Connection Intelligence**
+   - Destination detection using arrow markers
+   - Connection point calculation (center vs edge)
+   - Line endpoint updates during shape movement
+   - Text-to-shape proximity detection
+
 ## Success Criteria
 ✅ **Shapes are the unit** - Moving a shape moves its text and connected lines  
 ✅ **Lines follow destinations** - Arrows pointing to a shape follow when it moves  
 ✅ **No "flying off"** - Only intended elements move, others stay in place  
 ✅ **Intuitive editing** - Flowchart editing feels natural and predictable
+✅ **Maintainable code** - Modular architecture for easy updates

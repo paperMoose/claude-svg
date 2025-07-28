@@ -1,5 +1,55 @@
 # Claude Memory
 
+## SVG Editor Progress (Updated)
+
+### What We've Built
+We've created a powerful SVG editor integrated with the visualization template system. The editor is now modular and includes:
+
+1. **Basic Features Working**
+   - Load flowcharts from the template (UTF-8 encoding fixed)
+   - Select and drag any shape type (rectangles, circles, diamonds/paths, lines)
+   - Fixed diamond dragging "flying off" issue by storing original path data
+   - All basic editing tools functional
+
+2. **Modular Architecture** 
+   - `js/undo-system.js` - Complete undo/redo with keyboard shortcuts
+   - `js/drag-handler.js` - Separated drag handling logic
+   - `js/svg-utils.js` - Utility functions for SVG manipulation
+   - Main editor imports modules for better maintainability
+
+3. **Undo/Redo System**
+   - Ctrl+Z (Cmd+Z on Mac) for undo
+   - Ctrl+Y or Ctrl+Shift+Z for redo
+   - 50-step history
+   - Saves state before drag, create, and delete operations
+   - Restores element interactions after undo/redo
+
+### Key Lessons Learned
+1. **Incremental Development** - Make one change at a time and test
+2. **Path Element Dragging** - Must store original coordinates to prevent cumulative movement
+3. **UTF-8 Encoding** - Use proper encoding/decoding (not deprecated `unescape`)
+4. **State Management** - Save state BEFORE operations, not after
+5. **Modular Design** - Separate concerns into different files for maintainability
+
+### Current State
+- All basic dragging works perfectly
+- Undo/redo system fully functional
+- Code is modular and maintainable
+- Ready for next features
+
+### Next Features to Implement
+1. **Bulk Selection** (Next Priority)
+   - Click-drag rectangle to select multiple elements
+   - Move selected group while maintaining relative positions
+   - Visual feedback for selected elements
+   
+2. **Intelligent Connections** (After Bulk Selection)
+   - Lines follow shapes when moved
+   - Text groups with parent shapes
+   - Destination-focused connection logic
+
+#
+
 ## Initial Context
 
 This is Claude's memory file. The information below provides context and guidelines, but Claude should not take any action until the user makes an initial request. 
