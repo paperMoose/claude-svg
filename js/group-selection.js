@@ -68,6 +68,8 @@ class GroupSelectionBox {
         });
         
         document.body.appendChild(this.container);
+        console.log('Container appended to body:', this.container);
+        console.log('Container in DOM:', document.body.contains(this.container));
     }
     
     updateBounds() {
@@ -121,13 +123,23 @@ class GroupSelectionBox {
         
         console.log('Setting container position:', { left, top, width, height });
         
-        this.container.style.left = left + 'px';
-        this.container.style.top = top + 'px';
-        this.container.style.width = width + 'px';
-        this.container.style.height = height + 'px';
+        // TEMPORARY: Use fixed position for testing
+        this.container.style.left = '100px';
+        this.container.style.top = '100px';
+        this.container.style.width = '200px';
+        this.container.style.height = '200px';
         this.container.style.display = 'block';
         
-        console.log('Container should now be visible');
+        console.log('Container positioned at fixed 100,100 for testing');
+        console.log('Container styles:', {
+            position: this.container.style.position,
+            left: this.container.style.left,
+            top: this.container.style.top,
+            width: this.container.style.width,
+            height: this.container.style.height,
+            display: this.container.style.display,
+            zIndex: this.container.style.zIndex
+        });
         
         // Store bounds for transform calculations
         this.bounds = { minX, minY, maxX, maxY, width: maxX - minX, height: maxY - minY };
