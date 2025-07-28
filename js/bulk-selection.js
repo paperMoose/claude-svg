@@ -99,10 +99,8 @@ class BulkSelection {
             this.isSelecting = false;
             this.selectionRect.style.display = 'none';
             
-            // Final selection update
-            this.updateSelection();
-            
-            console.log('After updateSelection, selectedElements.size:', this.selectedElements.size);
+            // Don't call updateSelection here - we already have the selected elements
+            console.log('selectedElements.size at mouseUp:', this.selectedElements.size);
             
             // If we have selected elements, create a group selection box
             if (this.selectedElements.size > 0) {
