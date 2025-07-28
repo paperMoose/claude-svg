@@ -139,8 +139,102 @@ We implemented a bulk selection system for the SVG editor that allows users to:
 5. **Debugging Strategy**: Add comprehensive logging first, then clean up once issue is understood
 6. **Incremental Development**: Make one change at a time and test thoroughly
 
+---
+
+## Smart Move Tool Implementation
+
+### Overview
+Implemented a new "Smart Move" tool that allows users to move shapes while maintaining intelligent line connections. Lines automatically re-route with 90-degree angles to stay connected to moving shapes.
+
+### Key Features Implemented
+
+#### 1. Smart Selection and Movement
+- Draw selection rectangle to select shapes (similar to bulk select but with different behavior)
+- Lines are NOT selected - only shapes (rectangles, circles, diamonds/paths with fills)
+- Can start selection by clicking empty space OR Shift+clicking on any element
+- Selected shapes show blue glow visual feedback
+
+#### 2. Intelligent Line Behavior
+- **Lines fully inside region**: Move with the shapes (both endpoints connected to selected shapes)
+- **Lines partially connected**: One endpoint stays fixed, other endpoint follows the moving shape
+- **Line re-routing**: Paths automatically re-route with clean 90-degree angles (L-shaped paths)
+- **Arrow preservation**: Line markers (arrows) and styling are preserved during re-routing
+
+#### 3. Diamond (Path) Support Fixed
+- Diamonds are now properly detected and can be moved
+- Uses transform attribute instead of modifying path data
+- Stores original path data for reference
+
+### Technical Implementation Details
+
+#### Files Created/Modified
+1. **`js/smart-move.js`** - Complete Smart Move tool implementation
+2. **`svg-editor-inline.html`** - Added tool button, CSS styling, and script import
+
+#### Key Technical Solutions
+
+**1. Line Detection and Connection Mapping**:
+```javascript
+// Detect shapes at line endpoints
+findShapeAtPoint(x, y, excludeLine) {
+    // Prioritize actual shapes over text elements
+    // Use distance to edge calculation for better accuracy
+    // Increased threshold to 10px for better detection
+}
+```
+
+**2. Path Element Movement**:
+```javascript
+// For diamonds/paths, use transform instead of modifying path data
+element.setAttribute('transform', `translate(${newX}, ${newY})`);
+```
+
+**3. Intelligent Line Re-routing**:
+```javascript
+calculateRightAnglePath(x1, y1, x2, y2) {
+    // Create L-shaped paths based on dominant direction
+    if (Math.abs(dx) > Math.abs(dy)) {
+        // Horizontal then vertical
+        return `M${x1},${y1} L${x2},${y1} L${x2},${y2}`;
+    } else {
+        // Vertical then horizontal
+        return `M${x1},${y1} L${x1},${y2} L${x2},${y2}`;
+    }
+}
+```
+
+### Challenges and Solutions
+
+#### 1. Lines Being Selected When They Shouldn't
+- **Problem**: Line paths were being selected as shapes
+- **Solution**: Filter out paths with `fill="none"` during selection
+
+#### 2. Diamonds Not Moving
+- **Problem**: Path elements only stored `{isPath: true}` without position data
+- **Solution**: Store current transform values and apply transforms instead of modifying path data
+
+#### 3. Lines Connecting to Wrong Shapes
+- **Problem**: Lines were connecting to text instead of shapes (diamonds)
+- **Solution**: Improved shape detection to prioritize non-text elements and calculate distance to edge
+
+#### 4. Arrow Markers Disappearing
+- **Problem**: Re-routing paths lost their marker-end attributes
+- **Solution**: Only update the 'd' attribute, preserve all other attributes
+
+### Current Limitations
+- Line routing algorithm is simple (L-shaped) - could be improved for complex layouts
+- Some edge cases with connection detection still exist
+- Performance could be optimized for large numbers of elements
+
+### What We Learned
+1. **Transform vs Path Modification**: Using transforms for paths is more reliable than modifying path data
+2. **Event Handling Complexity**: Smart tool interactions require careful state management
+3. **Shape Detection**: Distance to edge is better than distance to center for connection detection
+4. **Visual Feedback**: Clear visual indicators (blue glow) are essential for user understanding
+5. **Incremental Improvement**: Start with basic functionality and iterate based on testing
+
 ### Next Steps
-1. **Fix startMultiDrag execution** - Investigate why function doesn't complete despite being called
-2. **Resolve coordinate initialization** - Ensure dragStartX/dragStartY are properly set
-3. **Test group drag functionality** - Verify multi-element dragging works once coordinates are fixed
-4. **Implement intelligent connections** - Lines follow shapes, text groups with parents
+1. **Improve line routing algorithm** - Add support for multiple turns and obstacle avoidance
+2. **Better connection point detection** - Snap to specific connection points on shapes
+3. **Performance optimization** - Batch DOM updates for smoother dragging
+4. **Enhanced visual feedback** - Show connection points and routing preview
