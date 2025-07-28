@@ -94,6 +94,7 @@ class BulkSelection {
     }
     
     handleMouseUp(e) {
+        console.log('BulkSelection handleMouseUp called, isSelecting:', this.isSelecting);
         if (this.isSelecting) {
             this.isSelecting = false;
             this.selectionRect.style.display = 'none';
@@ -101,8 +102,11 @@ class BulkSelection {
             // Final selection update
             this.updateSelection();
             
+            console.log('After updateSelection, selectedElements.size:', this.selectedElements.size);
+            
             // If we have selected elements, create a group selection box
             if (this.selectedElements.size > 0) {
+                console.log('Creating group selection box...');
                 // Clear the single selection
                 if (window.deselectElement) {
                     window.deselectElement();
@@ -110,6 +114,8 @@ class BulkSelection {
                 
                 // Create or update the group selection box
                 this.showGroupSelectionBox();
+            } else {
+                console.log('No elements selected, not creating group selection box');
             }
         }
         else if (this.isDraggingMultiple) {
@@ -123,8 +129,11 @@ class BulkSelection {
         const selRect = this.selectionRect.getBoundingClientRect();
         const svgRect = this.svg.getBoundingClientRect();
         
-        // Clear previous multi-selection styling
-        this.clearMultiSelection();
+        // Clear previous multi-selection styling only
+        this.selectedElements.forEach(element => {
+            element.classList.remove('bulk-selected');
+        });
+        this.selectedElements.clear();
         
         // Get SVG viewBox for coordinate transformation
         const viewBox = this.svg.viewBox.baseVal;
