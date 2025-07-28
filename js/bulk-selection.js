@@ -55,7 +55,6 @@ class BulkSelection {
             this.selectedElements.size > 1 &&
             !(e.ctrlKey || e.metaKey)) {
             
-            console.log('MouseDown on selected element - starting group drag');
             this.startMultiDrag(e);
             return;
         }
@@ -99,14 +98,11 @@ class BulkSelection {
             this.updateSelection();
         }
         else if (this.isDraggingMultiple) {
-            console.log('handleMouseMove: isDraggingMultiple is true, calling handleMultiDrag');
-            console.log('Current drag state - dragStartX:', this.dragStartX, 'dragStartY:', this.dragStartY);
             this.handleMultiDrag(e);
         }
     }
     
     handleMouseUp(e) {
-        console.log('BulkSelection handleMouseUp called, isSelecting:', this.isSelecting);
         if (this.isSelecting) {
             this.isSelecting = false;
             this.selectionRect.style.display = 'none';
@@ -117,7 +113,6 @@ class BulkSelection {
             e.preventDefault();
             
             // Don't call updateSelection here - we already have the selected elements
-            console.log('selectedElements.size at mouseUp:', this.selectedElements.size);
             
             // Set flag to prevent immediate clearing by SVG click handler
             window.bulkSelectionJustCompleted = true;
@@ -127,7 +122,6 @@ class BulkSelection {
             
             // Bulk selection complete - elements now have visual feedback (green glow)
             // No red rectangle needed - user can click on any selected element to drag the group
-            console.log('Bulk selection complete:', this.selectedElements.size, 'elements selected');
             
             return false; // Additional prevention
         }
@@ -200,8 +194,6 @@ class BulkSelection {
     }
     
     clearMultiSelection() {
-        console.log('BulkSelection.clearMultiSelection() called');
-        console.trace('clearMultiSelection called from:');
         
         this.selectedElements.forEach(element => {
             element.classList.remove('bulk-selected');
@@ -223,37 +215,22 @@ class BulkSelection {
     }
     
     startMultiDrag(e) {
-        console.log('=== startMultiDrag ENTRY ===');
-        console.log('startMultiDrag function called!');
-        console.log('Event object:', e);
-        console.log('Selected elements count:', this.selectedElements.size);
-        
         if (this.selectedElements.size <= 1) {
-            console.log('startMultiDrag: Not enough elements selected, returning');
             return;
         }
         
         try {
-            console.log('startMultiDrag called with event:', e);
-            console.log('Mouse coordinates:', e.clientX, e.clientY);
-            
             // Save state before dragging
             this.undoSystem.saveState('before_bulk_drag');
-            console.log('Undo state saved');
             
             this.isDraggingMultiple = true;
             this.dragStartX = e.clientX;
             this.dragStartY = e.clientY;
             
-            console.log('Set isDraggingMultiple:', this.isDraggingMultiple);
-            console.log('Set dragStart coordinates:', this.dragStartX, this.dragStartY);
-            
             // Set protection flag to prevent clearing during drag
             window.bulkSelectionJustCompleted = true;
-            console.log('Protection flag set during drag start');
             
             // Store initial positions of all selected elements
-            console.log('Storing positions for', this.selectedElements.size, 'elements');
             this.selectedElements.forEach(element => {
                 const pos = this.getElementPosition(element);
                 this.dragStartPositions.set(element, pos);
@@ -261,26 +238,17 @@ class BulkSelection {
             
             if (e.preventDefault) e.preventDefault();
             if (e.stopPropagation) e.stopPropagation();
-            
-            console.log('=== startMultiDrag COMPLETE ===');
         } catch (error) {
             console.error('Error in startMultiDrag:', error);
         }
     }
     
     handleMultiDrag(e) {
-        console.log('handleMultiDrag called with event:', e);
-        console.log('Drag start position:', this.dragStartX, this.dragStartY);
-        console.log('Current mouse position:', e.clientX, e.clientY);
-        
         const deltaX = e.clientX - this.dragStartX;
         const deltaY = e.clientY - this.dragStartY;
         
-        console.log('Calculated delta:', deltaX, deltaY);
-        
         // Check for invalid delta values
         if (isNaN(deltaX) || isNaN(deltaY)) {
-            console.error('Invalid delta values detected:', { deltaX, deltaY, dragStartX: this.dragStartX, dragStartY: this.dragStartY, clientX: e.clientX, clientY: e.clientY });
             return; // Don't proceed with invalid values
         }
         
@@ -291,7 +259,6 @@ class BulkSelection {
         this.selectedElements.forEach(element => {
             const startPos = this.dragStartPositions.get(element);
             if (!startPos) {
-                console.warn('No start position found for element:', element);
                 return;
             }
             
@@ -329,7 +296,6 @@ class BulkSelection {
                 const centerY = bounds.y + bounds.height / 2;
                 return { centerX, centerY };
             } catch (e) {
-                console.warn('Could not get bbox for path, using fallback:', e);
                 return { centerX: 0, centerY: 0 };
             }
         } else if (element.tagName === 'line') {
@@ -381,10 +347,10 @@ class BulkSelection {
                 try {
                     SVGUtils.updatePathPosition(element, svgDeltaX, svgDeltaY);
                 } catch (e) {
-                    console.error('Error updating path position:', e);
+                    // Error updating path position
                 }
             } else {
-                console.warn('Path missing centerX/centerY in startPos');
+                // Path missing centerX/centerY in startPos
             }
         } else if (element.tagName === 'line') {
             const newX1 = startPos.x1 + svgDeltaX;
