@@ -1,0 +1,32 @@
+import CalendarMonthNavigator from "../base/CalendarMonthNavigator.js";
+import DarkModeMixin from "../base/DarkModeMixin.js";
+import { defaultState } from "../base/internal.js";
+import PlainArrowDirectionMixin from "./PlainArrowDirectionMixin.js";
+import PlainCalendarDayButton from "./PlainCalendarDayButton.js";
+import PlainCalendarDayNamesHeader from "./PlainCalendarDayNamesHeader.js";
+import PlainCalendarMonthYearHeader from "./PlainCalendarMonthYearHeader.js";
+
+/**
+ * CalendarMonthNavigator component in the Plain reference design system
+ *
+ * @inherits CalendarMonthNavigator
+ * @mixes DarkModeMixin
+ * @mixes PlainArrowDirectionMixin
+ * @part {PlainCalendarDayNamesHeader} day-names-header
+ * @part {PlainCalendarDayButton} day
+ * @part {PlainCalendarMonthYearHeader} month-year-header
+ */
+class PlainCalendarMonthNavigator extends DarkModeMixin(
+  PlainArrowDirectionMixin(CalendarMonthNavigator)
+) {
+  // @ts-ignore
+  get [defaultState]() {
+    return Object.assign(super[defaultState], {
+      dayNamesHeaderPartType: PlainCalendarDayNamesHeader,
+      dayPartType: PlainCalendarDayButton,
+      monthYearHeaderPartType: PlainCalendarMonthYearHeader,
+    });
+  }
+}
+
+export default PlainCalendarMonthNavigator;

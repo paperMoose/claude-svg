@@ -1,0 +1,95 @@
+{
+  "name": "svg2pdf.js",
+  "version": "2.5.0",
+  "description": "A javascript-only SVG to PDF conversion utility that runs in the browser leveraging jsPDF",
+  "main": "dist/svg2pdf.umd.min.js",
+  "module": "dist/svg2pdf.es.min.js",
+  "browser": "dist/svg2pdf.es.min.js",
+  "files": [
+    "dist/**",
+    "types.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "types": "types.d.ts",
+  "scripts": {
+    "version": "yarpm run build && git add -A dist",
+    "build": "rollup -c rollup.config.mjs",
+    "pretest": "yarpm run build",
+    "test": "yarpm run test-unit && yarpm run test-globals && yarpm run test-amd && yarpm run test-cjs && yarpm run test-esm",
+    "test-unit": "karma start ./test/unit/karma.conf.js",
+    "test-globals": "karma start ./test/deployment/globals/karma.conf.js",
+    "test-amd": "karma start ./test/deployment/amd/karma.conf.js",
+    "test-cjs": "karma start ./test/deployment/cjs/karma.conf.js",
+    "test-esm": "karma start ./test/deployment/esm/karma.conf.js",
+    "test-typescript": "karma start ./test/deployment/typescript/karma.conf.js",
+    "test:ci": "cross-env SHOW_DIFF=true concurrently -k -s command-1 \"npm run createreferences\" \"npm run test\"",
+    "createreferences": "node test/common/reference-server.js",
+    "prettier": "prettier --write {playground,src,tests,typings}/**/*.{ts,js}",
+    "lint": "eslint {playground,src,tests,typings}/**/*.{ts,js}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yWorks/svg2pdf.js.git"
+  },
+  "keywords": [
+    "svg",
+    "pdf",
+    "javascript"
+  ],
+  "author": {
+    "name": "yFiles for HTML Support Team",
+    "email": "yfileshtml@yworks.com",
+    "url": "https://www.yworks.com/yfileshtml"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yWorks/svg2pdf.js/issues"
+  },
+  "homepage": "https://github.com/yWorks/svg2pdf.js#readme",
+  "peerDependencies": {
+    "jspdf": "^3.0.0 || ^2.0.0"
+  },
+  "dependencies": {
+    "cssesc": "^3.0.0",
+    "font-family-papandreou": "^0.2.0-patch1",
+    "specificity": "^0.4.1",
+    "svgpath": "^2.3.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.0",
+    "@typescript-eslint/eslint-plugin": "^3.6.1",
+    "@typescript-eslint/parser": "^3.6.1",
+    "chai": "^4.2.0",
+    "chalk": "^4.1.0",
+    "concurrently": "^8.2.0",
+    "cross-env": "^7.0.2",
+    "cssesc": "^3.0.0",
+    "eslint": "^7.4.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "exorcist": "^2.0.0",
+    "font-family-papandreou": "^0.2.0-patch1",
+    "jspdf": "^3.0.1",
+    "karma": "^6.3.2",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-firefox-launcher": "^2.1.0",
+    "karma-mocha": "^2.0.1",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-webpack": "^5.0.0",
+    "log-utils": "^1.0.0",
+    "mocha": "^10.7.3",
+    "prettier": "^1.19.1",
+    "requirejs": "^2.3.6",
+    "rollup": "^4.22.4",
+    "rollup-plugin-license": "^3.5.3",
+    "ts-loader": "^8.0.0",
+    "typescript": "^5.6.2",
+    "webpack": "^5.88.0",
+    "yarpm": "^1.2.0"
+  }
+}

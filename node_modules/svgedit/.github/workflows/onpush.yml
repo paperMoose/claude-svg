@@ -1,0 +1,24 @@
+name: check each push
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20.x
+    - name: npm install, test and lint
+      run: |
+        npm ci
+        npm run build --workspace=packages/svgcanvas
+        npm run lint
+        npm run test
+      env:
+        CI: true
+

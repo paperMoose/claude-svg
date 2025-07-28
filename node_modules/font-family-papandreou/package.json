@@ -1,0 +1,24 @@
+{
+  "name": "font-family-papandreou",
+  "version": "0.2.0-patch2",
+  "description": "CSS font-family parser/stringifier",
+  "main": "index.js",
+  "author": "Taro Hanamura <m@hanamurataro.com> (http://hanamurataro.com/)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hanamura/font-family.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hanamura/font-family/issues"
+  },
+  "homepage": "https://github.com/hanamura/font-family",
+  "devDependencies": {
+    "chai": "3.0.0",
+    "mocha": "2.2.5"
+  },
+  "scripts": {
+    "start": "npm i && gulp watch",
+    "test": "mocha"
+  }
+}

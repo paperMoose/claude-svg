@@ -1,0 +1,127 @@
+import { deepContains, firstFocusableElement } from "../core/dom.js";
+import { fragmentFrom } from "../core/htmlLiterals.js";
+import ReactiveElement from "../core/ReactiveElement.js"; // eslint-disable-line no-unused-vars
+import { firstRender, ids, keydown, render, shadowRoot } from "./internal.js";
+
+// Symbols for private data members on an element.
+const wrap = Symbol("wrap");
+/** @type {any} */
+const wrappingFocusKey = Symbol("wrappingFocus");
+
+/**
+ * Allows Tab and Shift+Tab operations to cycle the focus within the component.
+ *
+ * This mixin expects the component to provide:
+ *
+ * * A template-stamping mechanism compatible with `ShadowTemplateMixin`.
+ *
+ * The mixin provides these features to the component:
+ *
+ * * Template elements and event handlers that will cause the keyboard focus to wrap.
+ *
+ * This mixin [contributes to a component's template](mixins#mixins-that-contribute-to-a-component-s-template).
+ * See that discussion for details on how to use such a mixin.
+ *
+ * @module FocusCaptureMixin
+ * @param {Constructor<ReactiveElement>} Base
+ */
+function FocusCaptureMixin(Base) {
+  class FocusCapture extends Base {
+    [keydown](/** @type {KeyboardEvent} */ event) {
+      const firstElement = firstFocusableElement(this[shadowRoot]);
+      // We need to check both the document active element (to handle case where
+      // the user is tabbing through light DOM nodes assigned to a slot) and the
+      // shadow active element (to handle case where the user is tabbing through
+      // shadow nodes).
+      if (firstElement) {
+        const firstElementIsDocumentActive =
+          document.activeElement &&
+          (document.activeElement === firstElement ||
+            document.activeElement.contains(firstElement));
+        const shadowActiveElement = this[shadowRoot].activeElement;
+        const firstElementIsShadowActive =
+          shadowActiveElement &&
+          (shadowActiveElement === firstElement ||
+            deepContains(shadowActiveElement, firstElement));
+        const firstElementIsActive =
+          firstElementIsDocumentActive || firstElementIsShadowActive;
+        if (firstElementIsActive && event.key === "Tab" && event.shiftKey) {
+          // Set focus to focus catcher.
+          // The Shift+Tab keydown event should continue bubbling, and the default
+          // behavior should cause it to end up on the last focusable element.
+          this[wrappingFocusKey] = true;
+          this[ids].focusCatcher.focus();
+          this[wrappingFocusKey] = false;
+          // Don't mark the event as handled, since we want it to keep bubbling up.
+        }
+      }
+
+      // Prefer mixin result if it's defined, otherwise use base result.
+      return (super[keydown] && super[keydown](event)) || false;
+    }
+
+    [render](/** @type {ChangedFlags} */ changed) {
+      if (super[render]) {
+        super[render](changed);
+      }
+      if (this[firstRender]) {
+        this[ids].focusCatcher.addEventListener("focus", () => {
+          if (!this[wrappingFocusKey]) {
+            // Wrap focus back to the first focusable element.
+            const focusElement = firstFocusableElement(this[shadowRoot]);
+            if (focusElement) {
+              focusElement.focus();
+            }
+          }
+        });
+      }
+    }
+
+    /**
+     * Destructively wrap a node with elements necessary to capture focus.
+     *
+     * Call this method in a components `internal.template` property.
+     * Invoke this method as `this[FocusCaptureMixin.wrap](element)`.
+     *
+     * @param {Element} target - the element within which focus should wrap
+     */
+    [wrap](target) {
+      const focusCapture = fragmentFrom.html`
+        <style>
+          #focusCapture {
+            display: flex;
+            height: 100%;
+            overflow: hidden;
+            width: 100%;
+          }
+
+          #focusCaptureContainer {
+            align-items: center;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+          }
+        </style>
+        <div id="focusCapture">
+          <div id="focusCaptureContainer"></div>
+          <div id="focusCatcher" tabindex="0"></div>
+        </div>
+      `;
+
+      // Wrap the target with the focus capture elements.
+      const container = focusCapture.getElementById("focusCaptureContainer");
+      if (container) {
+        target.replaceWith(focusCapture);
+        container.append(target);
+      }
+    }
+  }
+
+  return FocusCapture;
+}
+
+FocusCaptureMixin.wrap = wrap;
+
+export default FocusCaptureMixin;

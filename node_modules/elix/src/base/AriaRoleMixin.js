@@ -1,0 +1,65 @@
+import ReactiveElement from "../core/ReactiveElement.js"; // eslint-disable-line no-unused-vars
+import {
+  defaultState,
+  render,
+  rendering,
+  setState,
+  state,
+} from "./internal.js";
+
+/**
+ * Lets a component define its ARIA role through a `role` state member
+ *
+ * Among other things, this allows a class or mixin to define a default
+ * role through the component's `defaultState`.
+ *
+ * Some mixins come with identicial support for managing an ARIA role. Those
+ * mixins include [AriaListMixin](AriaListMixin),
+ * [AriaMenuMixin](AriaMenuMixin), [DialogModalityMixin](DialogModalityMixin),
+ * and [PopupModalityMixin](PopupModalityMixin). If you're using one of those
+ * mixins, you do *not* need to use this mixin.
+ *
+ * @module AriaRoleMixin
+ * @param {Constructor<ReactiveElement>} Base
+ */
+export default function AriaRoleMixin(Base) {
+  // The class prototype added by the mixin.
+  class AriaRole extends Base {
+    // @ts-ignore
+    get [defaultState]() {
+      return Object.assign(super[defaultState] || {}, {
+        role: null,
+      });
+    }
+
+    [render](/** @type {ChangedFlags} */ changed) {
+      if (super[render]) {
+        super[render](changed);
+      }
+      if (changed.role) {
+        // Apply top-level role.
+        const { role } = this[state];
+        if (role) {
+          this.setAttribute("role", role);
+        } else {
+          this.removeAttribute("role");
+        }
+      }
+    }
+
+    // Setting the standard role attribute will invoke this property setter,
+    // which will allow us to update our state.
+    get role() {
+      return super.role;
+    }
+    set role(role) {
+      const s = String(role);
+      super.role = s;
+      if (!this[rendering]) {
+        this[setState]({ s });
+      }
+    }
+  }
+
+  return AriaRole;
+}

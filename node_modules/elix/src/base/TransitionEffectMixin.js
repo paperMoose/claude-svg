@@ -1,0 +1,130 @@
+import ReactiveElement from "../core/ReactiveElement.js"; // eslint-disable-line no-unused-vars
+import {
+  effectEndTarget,
+  firstRender,
+  render,
+  rendered,
+  setState,
+  shadowRoot,
+  startEffect,
+  state,
+} from "./internal.js";
+
+/**
+ * Update state before, during, and after CSS transitions
+ *
+ * @module TransitionEffectMixin
+ * @param {Constructor<ReactiveElement>} Base
+ */
+export default function TransitionEffectMixin(Base) {
+  // The class prototype added by the mixin.
+  class TransitionEffect extends Base {
+    /**
+     * Return the elements that use CSS transitions to provide visual effects.
+     *
+     * By default, this assumes the host element itself will have a CSS
+     * transition applied to it, and so returns an array containing the element.
+     * If you will be applying CSS transitions to other elements, override this
+     * property and return an array containing the implicated elements.
+     *
+     * See [effectEndTarget](internal#internal.effectEndTarget)
+     * for details.
+     *
+     * @type {HTMLElement}
+     */
+    get [effectEndTarget]() {
+      return super[effectEndTarget] || this;
+    }
+
+    [render](/** @type {ChangedFlags} */ changed) {
+      if (super[render]) {
+        super[render](changed);
+      }
+      if (this[firstRender]) {
+        // Listen for `transitionend` events so we can check to see whether an
+        // effect has completed. If the component defines an `effectEndTarget`
+        // that's the host, listen to events on that. Otherwise, we assume the
+        // target is either in the shadow or an element that will be slotted into
+        // a slot in the shadow, so we'll listen to events that reach the shadow
+        // root.
+        const target = this[effectEndTarget] === this ? this : this[shadowRoot];
+        target.addEventListener("transitionend", (event) => {
+          // See if the event target is our expected `effectEndTarget`. If the
+          // component defines a `effectEndTarget` state, we use that; otherwise,
+          // we use the element identified with `internal.effectEndTarget`.
+          const effectTarget =
+            this[state].effectEndTarget || this[effectEndTarget];
+          if (event.target === effectTarget) {
+            // Advance to the next phase.
+            this[setState]({
+              effectPhase: "after",
+            });
+          }
+        });
+      }
+    }
+
+    [rendered](/** @type {ChangedFlags} */ changed) {
+      if (super[rendered]) {
+        super[rendered](changed);
+      }
+      if (changed.effect || changed.effectPhase) {
+        const { effect, effectPhase } = this[state];
+        /**
+         * Raised when [state.effect](TransitionEffectMixin#effect-phases) or
+         * [state.effectPhase](TransitionEffectMixin#effect-phases) changes.
+         *
+         * Note: In general, Elix components do not raise events in response to
+         * outside manipulation. (See
+         * [raiseChangeEvents](internal#internal.raiseChangeEvents).) However, for
+         * a component using `TransitionEffectMixin`, a single invocation of the
+         * `startEffect` method will cause the element to pass through multiple
+         * visual states. This makes it hard for external hosts of this
+         * component to know what visual state the component is in. Accordingly,
+         * the mixin raises the `effectphasechange` event whenever the effect or
+         * phase changes, even if `internal.raiseChangeEvents` is false.
+         *
+         * @event effectphasechange
+         */
+        const event = new CustomEvent("effectphasechange", {
+          bubbles: true,
+          detail: {
+            effect,
+            effectPhase,
+          },
+        });
+        this.dispatchEvent(event);
+
+        if (effect) {
+          if (effectPhase !== "after") {
+            // We read a layout property to force the browser to render the component
+            // with its current styles before we move to the next state. This ensures
+            // animated values will actually be applied before we move to the next
+            // state.
+            this.offsetHeight;
+          }
+          if (effectPhase === "before") {
+            // Advance to the next phase.
+            this[setState]({
+              effectPhase: "during",
+            });
+          }
+        }
+      }
+    }
+
+    /**
+     * See [startEffect](internal#internal.startEffect).
+     *
+     * @param {string} effect
+     */
+    async [startEffect](effect) {
+      await this[setState]({
+        effect,
+        effectPhase: "before",
+      });
+    }
+  }
+
+  return TransitionEffect;
+}

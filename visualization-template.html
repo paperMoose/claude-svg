@@ -203,6 +203,10 @@
             </select>
         </div>
         
+        <button onclick="openInSvgEditor()" style="width: 100%; padding: 10px 20px; background: #8b5cf6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; margin-bottom: 10px;">
+            Edit in SVG Editor
+        </button>
+        
         <button id="download-btn" onclick="downloadVisualization()">Download</button>
         </div>
     </div>
@@ -539,6 +543,50 @@
             
             // Load the SVG as an image
             img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+        }
+        
+        // Open in SVG Editor
+        function openInSvgEditor() {
+            const svg = document.getElementById('visualization');
+            const svgString = new XMLSerializer().serializeToString(svg);
+            
+            // Encode SVG content for URL parameter
+            const encodedSvg = encodeURIComponent(svgString);
+            
+            // Open editor in new window
+            const editorWindow = window.open(`svg-editor-inline.html?svg=${encodedSvg}`, 'svgEditor', 'width=1400,height=900');
+            
+            // Listen for messages from editor
+            window.addEventListener('message', function(e) {
+                if (e.data.type === 'svg-update' && e.data.svg) {
+                    // Update the current SVG with edited version
+                    const container = document.getElementById('visualization-container');
+                    const cropOverlay = document.getElementById('crop-overlay');
+                    container.innerHTML = e.data.svg;
+                    
+                    // Re-add the crop overlay
+                    container.appendChild(cropOverlay);
+                    
+                    // Show confirmation
+                    const msg = document.createElement('div');
+                    msg.style.cssText = `
+                        position: fixed;
+                        bottom: 20px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        background: #10b981;
+                        color: white;
+                        padding: 12px 24px;
+                        border-radius: 5px;
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                        z-index: 10000;
+                    `;
+                    msg.textContent = 'SVG updated from editor!';
+                    document.body.appendChild(msg);
+                    
+                    setTimeout(() => msg.remove(), 3000);
+                }
+            });
         }
         
         // Keyboard shortcut
