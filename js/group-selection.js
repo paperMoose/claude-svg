@@ -29,11 +29,11 @@ class GroupSelectionBox {
         this.container.className = 'group-selection-box';
         this.container.style.cssText = `
             position: fixed;
-            border: 2px solid #6366f1;
-            background: rgba(99, 102, 241, 0.05);
+            border: 3px solid #ff0000;
+            background: rgba(255, 0, 0, 0.3);
             pointer-events: all;
             cursor: move;
-            z-index: 1000;
+            z-index: 9999;
         `;
         
         // Add resize handles
