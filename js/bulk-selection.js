@@ -123,6 +123,11 @@ class BulkSelection {
         // Clear previous multi-selection styling
         this.clearMultiSelection();
         
+        // Get SVG viewBox for coordinate transformation
+        const viewBox = this.svg.viewBox.baseVal;
+        const scaleX = svgRect.width / viewBox.width;
+        const scaleY = svgRect.height / viewBox.height;
+        
         // Check each element in the SVG
         const elements = this.svg.querySelectorAll('rect, circle, text, path, line, polygon, polyline, g');
         elements.forEach(element => {
@@ -132,13 +137,15 @@ class BulkSelection {
             }
             
             try {
-                // Get element bounds in viewport coordinates
+                // Get element bounds in SVG coordinates
                 const bbox = element.getBBox();
+                
+                // Convert to viewport coordinates
                 const elementRect = {
-                    left: svgRect.left + bbox.x,
-                    top: svgRect.top + bbox.y,
-                    right: svgRect.left + bbox.x + bbox.width,
-                    bottom: svgRect.top + bbox.y + bbox.height
+                    left: svgRect.left + (bbox.x * scaleX),
+                    top: svgRect.top + (bbox.y * scaleY),
+                    right: svgRect.left + ((bbox.x + bbox.width) * scaleX),
+                    bottom: svgRect.top + ((bbox.y + bbox.height) * scaleY)
                 };
                 
                 // Check if element is inside selection rectangle
@@ -147,7 +154,7 @@ class BulkSelection {
                     element.classList.add('bulk-selected');
                 }
             } catch (e) {
-                // Skip elements that don't support getBBox
+                console.warn('Error getting bounds for element:', e);
             }
         });
         
